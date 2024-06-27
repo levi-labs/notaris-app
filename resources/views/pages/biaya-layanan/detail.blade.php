@@ -53,7 +53,7 @@
                                                     {{ $item->layanan->nama }}
                                                 </div>
                                             </td>
-                                            <td>{{ $item->harga }}</td>
+                                            <td>{{ 'Rp ' . number_format($item->harga, 0, ',', '.') }}</td>
 
                                             <td>
                                                 <a href="javascript:void(0)" class="btn btn-primary"

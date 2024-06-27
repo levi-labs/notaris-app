@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BerkasLayanan;
+use App\Models\BiayaPermohonan;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
 use Illuminate\Http\Request;
@@ -148,9 +149,16 @@ class PpatController extends Controller
         $title  = 'Detail Pengajuan PPAT';
         $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
         $lampiran = json_decode($berkas->files);
+        $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
 
 
-        return view('pages.ppat.detail', compact('title', 'ppat', 'berkas', 'lampiran'));
+        return view('pages.ppat.detail', compact(
+            'title',
+            'ppat',
+            'berkas',
+            'lampiran',
+            'biayalayanan'
+        ));
     }
 
     public function download(Request $request)
@@ -200,6 +208,20 @@ class PpatController extends Controller
      */
     public function destroy(Ppat $ppat)
     {
-        //
+        try {
+            $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+            $files = json_decode($berkas->files);
+            $temp_delete = [];
+            foreach ($files as $file) {
+                if (Storage::exists($file)) {
+                    Storage::delete($file);
+                }
+            }
+            $ppat->delete();
+            return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil');
+        } catch (\Exception $th) {
+
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 }

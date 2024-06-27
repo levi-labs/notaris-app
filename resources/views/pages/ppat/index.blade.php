@@ -3,8 +3,10 @@
 @section('content')
     <style>
         .more-text {
+            text-align: center !important;
             max-width: 250px !important;
             white-space: pre-line !important;
+
         }
     </style>
     <div class="pcoded-content">
@@ -29,10 +31,11 @@
                                 <tbody class="text-center">
                                     @foreach ($data as $item)
                                         <tr>
-                                            <td></td>
+                                            <td> {{ $loop->iteration }}</td>
                                             <td>{{ $item->user->nama }}</td>
-                                            <td class="more-text">
-                                                {{ $item->layanan->nama }}
+                                            <td>
+
+                                                {{ $item->layanan->nama }} |
                                                 <div class="badge badge-info">
                                                     {{ $item->layanan->jenisPermohonan->nama }}
                                                 </div>
@@ -43,8 +46,13 @@
                                                 </a>
                                                 <a href="{{ route('ppat.edit', $item->id) }}"
                                                     class="btn btn-warning">Edit</a>
-                                                <a href="{{ route('ppat.destroy', $item->id) }}"
-                                                    class="btn btn-danger">Hapus</a>
+                                                <form action="{{ route('ppat.destroy', $item->id) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                </form>
+
                                             </td>
                                         </tr>
                                     @endforeach

@@ -4,6 +4,7 @@ use App\Http\Controllers\BiayaPermohonanController;
 use App\Http\Controllers\JenisPermohonanController;
 use App\Http\Controllers\LayananPermohonanController;
 use App\Http\Controllers\PpatController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,10 +25,22 @@ Route::get('/', function () {
 Route::get('/home', function () {
     return view('layouts.master');
 });
+Route::controller(UserController::class)->prefix('auth')->group(function () {
+    Route::get('/register', 'register')->name('register');
+    Route::post('/register', 'store')->name('register.post');
+    Route::get('/login', 'login')->name('login');
+    Route::post('/login', 'authenticate')->name('login.post');
+    Route::get('/logout', 'logout')->name('logout');
+});
+Route::get('/login', function () {
+    return view('pages.auth.login');
+});
 
 Route::get('/dashboard', function () {
     return view('pages.dashboard.index');
 });
+
+
 
 Route::controller(JenisPermohonanController::class)->prefix('permohonan')->group(function () {
     Route::get('/', 'index')->name('permohonan.index');
