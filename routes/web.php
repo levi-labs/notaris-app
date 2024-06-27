@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiayaPermohonanController;
 use App\Http\Controllers\JenisPermohonanController;
 use App\Http\Controllers\LayananPermohonanController;
@@ -19,67 +20,65 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/dashboard');
 });
 
-Route::get('/home', function () {
-    return view('layouts.master');
-});
-Route::controller(UserController::class)->prefix('auth')->group(function () {
+// Route::get('/home', function () {
+//     return view('layouts.master');
+// });
+Route::controller(AuthController::class)->prefix('auth')->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/register', 'store')->name('register.post');
-    Route::get('/login', 'login')->name('login');
-    Route::post('/login', 'authenticate')->name('login.post');
+    Route::get('/login', 'showLogin')->name('login');
+    Route::post('/login', 'login')->name('login.post');
     Route::get('/logout', 'logout')->name('logout');
 });
-Route::get('/login', function () {
-    return view('pages.auth.login');
-});
-
-Route::get('/dashboard', function () {
-    return view('pages.dashboard.index');
-});
 
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/dashboard', function () {
+        return view('pages.dashboard.index');
+    })->name('dashboard');
 
-Route::controller(JenisPermohonanController::class)->prefix('permohonan')->group(function () {
-    Route::get('/', 'index')->name('permohonan.index');
-    Route::get('/create', 'create')->name('permohonan.create');
-    Route::post('/store', 'store')->name('permohonan.store');
-    Route::get('/{jenisPermohonan}', 'show')->name('permohonan.show');
-    Route::get('/edit/{jenisPermohonan}', 'edit')->name('permohonan.edit');
-    Route::put('/update/{jenisPermohonan}', 'update')->name('permohonan.update');
-    Route::delete('/destroy/{jenisPermohonan}', 'destroy')->name('permohonan.destroy');
-});
+    Route::controller(JenisPermohonanController::class)->prefix('permohonan')->group(function () {
+        Route::get('/', 'index')->name('permohonan.index');
+        Route::get('/create', 'create')->name('permohonan.create');
+        Route::post('/store', 'store')->name('permohonan.store');
+        Route::get('/{jenisPermohonan}', 'show')->name('permohonan.show');
+        Route::get('/edit/{jenisPermohonan}', 'edit')->name('permohonan.edit');
+        Route::put('/update/{jenisPermohonan}', 'update')->name('permohonan.update');
+        Route::delete('/destroy/{jenisPermohonan}', 'destroy')->name('permohonan.destroy');
+    });
 
-Route::controller(LayananPermohonanController::class)->prefix('layanan')->group(function () {
-    Route::get('/', 'index')->name('layanan.index');
-    Route::get('/create', 'create')->name('layanan.create');
-    Route::post('/store', 'store')->name('layanan.store');
-    Route::get('/{layananPermohonan}', 'show')->name('layanan.show');
-    Route::get('/edit/{layananPermohonan}', 'edit')->name('layanan.edit');
-    Route::put('/update/{layananPermohonan}', 'update')->name('layanan.update');
-    Route::delete('/destroy/{layananPermohonan}', 'destroy')->name('layanan.destroy');
-});
+    Route::controller(LayananPermohonanController::class)->prefix('layanan')->group(function () {
+        Route::get('/', 'index')->name('layanan.index');
+        Route::get('/create', 'create')->name('layanan.create');
+        Route::post('/store', 'store')->name('layanan.store');
+        Route::get('/{layananPermohonan}', 'show')->name('layanan.show');
+        Route::get('/edit/{layananPermohonan}', 'edit')->name('layanan.edit');
+        Route::put('/update/{layananPermohonan}', 'update')->name('layanan.update');
+        Route::delete('/destroy/{layananPermohonan}', 'destroy')->name('layanan.destroy');
+    });
 
-Route::controller(BiayaPermohonanController::class)->prefix('biaya')->group(function () {
-    Route::get('/', 'index')->name('biaya.index');
-    Route::get('/create', 'create')->name('biaya.create');
-    Route::post('/store', 'store')->name('biaya.store');
-    Route::get('/{id}', 'show')->name('biaya.show');
-    Route::get('/edit/{biayaPermohonan}', 'edit')->name('biaya.edit');
-    Route::put('/update/{biayaPermohonan}', 'update')->name('biaya.update');
-    Route::delete('/destroy/{biayaPermohonan}', 'destroy')->name('biaya.destroy');
-});
+    Route::controller(BiayaPermohonanController::class)->prefix('biaya')->group(function () {
+        Route::get('/', 'index')->name('biaya.index');
+        Route::get('/create', 'create')->name('biaya.create');
+        Route::post('/store', 'store')->name('biaya.store');
+        Route::get('/{id}', 'show')->name('biaya.show');
+        Route::get('/edit/{biayaPermohonan}', 'edit')->name('biaya.edit');
+        Route::put('/update/{biayaPermohonan}', 'update')->name('biaya.update');
+        Route::delete('/destroy/{biayaPermohonan}', 'destroy')->name('biaya.destroy');
+    });
 
-Route::controller(PpatController::class)->prefix('ppat')->group(function () {
-    Route::get('/', 'index')->name('ppat.index');
-    Route::get('/pilih-layanan', 'selectLayanan')->name('ppat.layanan');
-    Route::get('/create', 'create')->name('ppat.create');
-    Route::post('/download', 'download')->name('ppat.download');
-    Route::post('/create/store', 'store')->name('ppat.store');
-    Route::get('/{ppat}', 'show')->name('ppat.show');
-    Route::get('/edit/{ppat}', 'edit')->name('ppat.edit');
-    Route::put('/update/{ppat}', 'update')->name('ppat.update');
-    Route::delete('/destroy/{ppat}', 'destroy')->name('ppat.destroy');
+    Route::controller(PpatController::class)->prefix('ppat')->group(function () {
+        Route::get('/', 'index')->name('ppat.index');
+        Route::get('/pilih-layanan', 'selectLayanan')->name('ppat.layanan');
+        Route::get('/create', 'create')->name('ppat.create');
+        Route::post('/download', 'download')->name('ppat.download');
+        Route::post('/create/store', 'store')->name('ppat.store');
+        Route::get('/{ppat}', 'show')->name('ppat.show');
+        Route::get('/edit/{ppat}', 'edit')->name('ppat.edit');
+        Route::put('/update/{ppat}', 'update')->name('ppat.update');
+        Route::delete('/destroy/{ppat}', 'destroy')->name('ppat.destroy');
+    });
 });

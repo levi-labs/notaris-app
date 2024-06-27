@@ -15,8 +15,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showLogin(): View
+    public function showLogin()
     {
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
         return view('pages.auth.login');
     }
 
@@ -28,12 +31,15 @@ class AuthController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
         $credentials = $request->only('username', 'password');
 
         if (!auth()->validate($credentials)) {
-            return Redirect::back()->withErrors([
-                'username' => __('auth.failed'),
-            ]);
+            return Redirect::back()->with('error', 'Invalid credentials.');
         }
 
         auth()->loginUsingId(User::where('username', $credentials['username'])->value('id'));
@@ -46,8 +52,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View The registration page view.
      */
-    public function showRegister(): View
+    public function showRegister()
     {
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
         return view('pages.auth.register');
     }
 
@@ -72,5 +81,11 @@ class AuthController extends Controller
         auth()->loginUsingId(User::latest()->first()->id);
 
         return redirect()->route('dashboard');
+    }
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect()->route('login');
     }
 }

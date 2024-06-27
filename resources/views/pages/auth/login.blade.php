@@ -36,17 +36,28 @@
             <div class="row align-items-center ">
                 <div class="col-md-12">
                     <div class="card-body">
+                        @if (session()->has('error'))
+                            <div class="alert alert-danger">
+                                {{ session()->get('error') }}
+                            </div>
+                        @endif
                         <h4 class="mb-3 f-w-400">Signin</h4>
                         <hr>
-                        <form action="{{ route('login.store') }}" method="POST">
+                        <form action="{{ route('login.post') }}" method="POST">
                             @csrf
                             <div class="form-group mb-3">
                                 <input type="text" class="form-control" id="username" placeholder="Username"
                                     name="username">
+                                @error('username')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="form-group mb-4">
                                 <input type="password" class="form-control" id="Password" placeholder="Password"
                                     name="password">
+                                @error('password')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                             {{-- <div class="custom-control custom-checkbox text-left mb-4 mt-2">
                             <input type="checkbox" class="custom-control-input" id="customCheck1">
