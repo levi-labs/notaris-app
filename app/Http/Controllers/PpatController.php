@@ -7,6 +7,7 @@ use App\Models\LayananPermohonan;
 use App\Models\Ppat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PpatController extends Controller
 {
@@ -144,7 +145,38 @@ class PpatController extends Controller
      */
     public function show(Ppat $ppat)
     {
-        //
+        $title  = 'Detail Pengajuan PPAT';
+        $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+        $lampiran = json_decode($berkas->files);
+
+
+        return view('pages.ppat.detail', compact('title', 'ppat', 'berkas', 'lampiran'));
+    }
+
+    public function download(Request $request)
+    {
+
+        $filename = $request->filename;
+        $filePath = storage_path('app/' . $filename);
+
+        if (file_exists($filePath)) {
+            $headers = [
+
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
+                'Content-Length' => strlen($filePath),
+                'Content-Type' => 'application/pdf',
+            ];
+            $safeFilename = str_replace(['/', '\\'], '_', $filename);
+            $saveFilename = explode('_', $safeFilename);
+            $namedownloaded = array_shift($saveFilename);
+
+            $downloadname = implode('_', $saveFilename);
+
+
+
+            return response()->download($filePath, $downloadname, $headers);
+        }
+        return redirect()->back()->withErrors(['file' => 'File not found']);
     }
 
     /**

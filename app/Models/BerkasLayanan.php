@@ -11,8 +11,8 @@ class BerkasLayanan extends Model
     protected $table = 'berkas_layanan';
     protected $guarded = ['id'];
 
-    public function download()
-    {
-        return '/storage/' . $this->files;
-    }
+    // public function download($filename)
+    // {
+    //     return '/storage/' . $filename;
+    // }
 }

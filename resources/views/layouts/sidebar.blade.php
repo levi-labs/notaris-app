@@ -14,6 +14,10 @@
         <a href="{{ route('layanan.index') }}" class="nav-link "><span class="pcoded-micon"><i
                     class="feather icon-home"></i></span><span class="pcoded-mtext">Layanan Permohonan</span></a>
     </li>
+    <li class="nav-item">
+        <a href="{{ route('biaya.index') }}" class="nav-link "><span class="pcoded-micon"><i
+                    class="feather icon-home"></i></span><span class="pcoded-mtext">Biaya Permohonan</span></a>
+    </li>
     <li class="nav-item pcoded-hasmenu">
         <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-layout"></i></span><span
                 class="pcoded-mtext">Layanan PPAT

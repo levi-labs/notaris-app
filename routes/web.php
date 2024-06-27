@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BiayaPermohonanController;
 use App\Http\Controllers\JenisPermohonanController;
 use App\Http\Controllers\LayananPermohonanController;
 use App\Http\Controllers\PpatController;
@@ -48,10 +49,21 @@ Route::controller(LayananPermohonanController::class)->prefix('layanan')->group(
     Route::delete('/destroy/{layananPermohonan}', 'destroy')->name('layanan.destroy');
 });
 
+Route::controller(BiayaPermohonanController::class)->prefix('biaya')->group(function () {
+    Route::get('/', 'index')->name('biaya.index');
+    Route::get('/create', 'create')->name('biaya.create');
+    Route::post('/store', 'store')->name('biaya.store');
+    Route::get('/{id}', 'show')->name('biaya.show');
+    Route::get('/edit/{biayaPermohonan}', 'edit')->name('biaya.edit');
+    Route::put('/update/{biayaPermohonan}', 'update')->name('biaya.update');
+    Route::delete('/destroy/{biayaPermohonan}', 'destroy')->name('biaya.destroy');
+});
+
 Route::controller(PpatController::class)->prefix('ppat')->group(function () {
     Route::get('/', 'index')->name('ppat.index');
     Route::get('/pilih-layanan', 'selectLayanan')->name('ppat.layanan');
     Route::get('/create', 'create')->name('ppat.create');
+    Route::post('/download', 'download')->name('ppat.download');
     Route::post('/create/store', 'store')->name('ppat.store');
     Route::get('/{ppat}', 'show')->name('ppat.show');
     Route::get('/edit/{ppat}', 'edit')->name('ppat.edit');
