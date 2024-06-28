@@ -14,7 +14,12 @@ class UserController extends Controller
     public function index()
     {
         $title      = 'Daftar User';
-        $data       = DB::table('users')->where('type', '!=', 'master')->get();
+        if (auth()->user()->type_user == 'master') {
+            $data       = DB::table('users')->get();
+
+            return view('pages.users.index', compact('title', 'data'));
+        }
+        $data       = DB::table('users')->where('type_user', '!=', 'master')->get();
         return view('pages.users.index', compact('title', 'data'));
     }
 
@@ -24,10 +29,10 @@ class UserController extends Controller
     public function create()
     {
         $title      = 'Form Tambah User';
-        $type       = [1 => 'master', 2 => 'admin', 3 => 'user'];
+        $types       = ['master', 'admin', 'client'];
 
-        dd($type);
-        return view('pages.users.create', compact('title', 'type'));
+
+        return view('pages.users.create', compact('title', 'types'));
     }
 
     /**
@@ -45,13 +50,13 @@ class UserController extends Controller
 
 
         User::create([
-            'name' => $request->nama,
+            'nama' => $request->nama,
             'username' => $request->username,
             'password' => bcrypt($request->password),
             'type' => $request->type,
             'email' => $request->email
         ]);
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
 
     /**
@@ -67,7 +72,12 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
+        $title      = 'Form Edit User';
+        $types       = ['master', 'admin', 'client'];
+        $user       = User::find($id);
+
+        return view('pages.users.edit', compact('title', 'user', 'types'));
     }
 
     /**
@@ -75,7 +85,27 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $this->validate($request, [
+            'nama' => 'required',
+            'username' => 'required',
+            'type' => 'required',
+            'email' => 'required',
+        ]);
+
+        try {
+
+            $data = User::find($id);
+
+            $data->update([
+                'nama' => $request->nama,
+                'username' => $request->username,
+                'type_user' => $request->type,
+                'email' => $request->email
+            ]);
+            return redirect()->route('user.index')->with('success', 'User updated successfully');
+        } catch (\Exception $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 
     /**
@@ -83,6 +113,23 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $data = User::find($id);
+        $data->delete();
+        return redirect()->route('user.index')->with('success', 'User deleted successfully');
+    }
+
+    public function resetPassword(string $id)
+    {
+        try {
+
+            $data = User::find($id);
+            $data->update([
+                'password' => bcrypt($data->username)
+            ]);
+            return redirect()->route('user.index')->with('success', 'Password Reset successfully');
+        } catch (\Throwable $th) {
+
+            return back()->with('error', $th->getMessage());
+        }
     }
 }

@@ -25,7 +25,6 @@
                                         <th>#</th>
                                         <th>Nama</th>
                                         <th>Layanan Permohonan</th>
-                                        <th>Nomor Pengajuan</th>
                                         <th>Option</th>
                                     </tr>
                                 </thead>
@@ -40,9 +39,6 @@
                                                 <div class="badge badge-info">
                                                     {{ $item->layanan->jenisPermohonan->nama }}
                                                 </div>
-                                            </td>
-                                            <td>
-                                                {{ $item->nomor_pengajuan }}
                                             </td>
                                             <td>
                                                 <a href="{{ route('ppat.show', $item->id) }}" class="btn btn-secondary">

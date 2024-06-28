@@ -23,10 +23,15 @@
     <!-- vendor css -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-
-
-
 </head>
+<style>
+    .auth-wrapper {
+        background-image: url("/assets/images/login-background.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
 
 <!-- [ auth-signin ] start -->
 <div class="auth-wrapper">

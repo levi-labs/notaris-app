@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::controller(PpatController::class)->prefix('ppat')->group(function () {
         Route::get('/', 'index')->name('ppat.index');
+        Route::get('/index2', 'index2')->name('ppat.index2');
+        Route::get('/index3', 'index3')->name('ppat.index3');
+        Route::get('/index4', 'index4')->name('ppat.index4');
+
         Route::get('/pilih-layanan', 'selectLayanan')->name('ppat.layanan');
         Route::get('/create', 'create')->name('ppat.create');
         Route::post('/download', 'download')->name('ppat.download');
@@ -80,5 +84,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/edit/{ppat}', 'edit')->name('ppat.edit');
         Route::put('/update/{ppat}', 'update')->name('ppat.update');
         Route::delete('/destroy/{ppat}', 'destroy')->name('ppat.destroy');
+    });
+
+    Route::controller(UserController::class)->prefix('user')->group(function () {
+        Route::get('/', 'index')->name('user.index');
+        Route::get('/create', 'create')->name('user.create');
+        Route::post('/store', 'store')->name('user.store');
+        Route::get('/edit/{user}', 'edit')->name('user.edit');
+        Route::put('/update/{user}', 'update')->name('user.update');
+        Route::delete('/destroy/{user}', 'destroy')->name('user.destroy');
+        Route::get('/reset-password/{user}', 'resetPassword')->name('user.reset-password');
     });
 });

@@ -19,18 +19,19 @@
                             </div>
                         @endif
 
-                        <a href="{{ route('permohonan.create') }}" class="btn btn-primary mt-4">Tambah</a>
+                        <a href="{{ route('user.create') }}" class="btn btn-primary mt-4">Tambah</a>
                     </div>
                     <div class="card-body table-border-style">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover text-center">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nama Layanan Permohonan</th>
-                                        <th>Deskripsi</th>
+                                        <th>Nama</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Type</th>
                                         <th>Option</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -44,12 +45,16 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->nama }}</td>
-                                            <td class="deskripsi">{{ $item->deskripsi }}</td>
+                                            <td>{{ $item->username }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>{{ $item->type_user }}</td>
                                             <td>
-                                                <a href="{{ route('permohonan.edit', $item->id) }}"
-                                                    class="btn btn-primary">Edit</a>
-                                                <a href="{{ route('permohonan.destroy', $item->id) }}"
-                                                    class="btn btn-danger"> Hapus</a>
+                                                <a href="{{ route('user.reset-password', $item->id) }}"
+                                                    class="btn btn-info">Reset Password</a></a>
+                                                <a href="{{ route('user.edit', $item->id) }}"
+                                                    class="btn btn-warning">Edit</a>
+                                                <a href="{{ route('user.destroy', $item->id) }}" class="btn btn-danger">
+                                                    Hapus</a>
                                             </td>
                                         </tr>
                                     @endforeach
