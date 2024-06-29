@@ -297,11 +297,23 @@
                             width: 90% !important;
 
                         }
+
+                        .btn-cetak {
+                            background-color: rgb(171, 171, 171) !important;
+                            border-color: rgb(72, 72, 72) !important;
+                            color: white !important;
+                            display: inline-block !important;
+                            width: 90% !important;
+                        }
                     </style>
                     @if ($ppat->status_layanan == 4)
                         <div class="text-center">
                             <a href="{{ route('arsip-ppat.create', $ppat->id) }}"
                                 class="btn btn-arsipkan my-2 mx-1 text-center">Arsipkan</a>
+                        </div>
+                        <div class="text-center">
+                            <a href="{{ route('ppat.cetak', $ppat->id) }}"
+                                class="btn btn-cetak my-2 mx-1 text-center">Print</a>
                         </div>
                     @endif
 

@@ -87,6 +87,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/pembayaran-tambahan/{ppat}', 'pembayaranTambahan')->name('ppat.pembayaran-tambahan');
 
+        Route::get('/cetak-ppat/{ppat}', 'cetakPPAT')->name('ppat.cetak');
+
         Route::get('/pilih-layanan', 'selectLayanan')->name('ppat.layanan');
         Route::get('/create', 'create')->name('ppat.create');
         Route::post('/download', 'download')->name('ppat.download');

@@ -252,6 +252,27 @@ class PpatController extends Controller
         return redirect()->back()->withErrors(['file' => 'File not found']);
     }
 
+    public function cetakPPAT(Ppat $ppat)
+    {
+
+        $title  = 'Cetak PPAT';
+        $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+        $lampiran = json_decode($berkas->files);
+
+        $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
+        $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+
+
+        return view('pages.ppat.cetak-ppat', compact(
+            'title',
+            'ppat',
+            'berkas',
+            'lampiran',
+            'biayalayanan',
+            'biayaTambahan'
+        ));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
