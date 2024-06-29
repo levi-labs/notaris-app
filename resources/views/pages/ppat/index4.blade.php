@@ -32,8 +32,8 @@
                         @endif
                         <a href="{{ route('ppat.layanan') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
                         <div class="alert alert-info my-2">
-                            <i class="feather icon-info"></i> <b>INFO</b> : &nbsp; Pengajuan sudah terverifikasi silahkan
-                            cek detail pengajuan untuk melihat informasi selanjutnya
+                            <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan yang sudah selesai masih bisa di
+                            akses di detail pengajuan.
                         </div>
                     </div>
                     <div class="card-body table-border-style">

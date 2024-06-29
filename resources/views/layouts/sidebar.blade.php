@@ -24,9 +24,9 @@
             </span></a>
         <ul class="pcoded-submenu">
             <li><a href="{{ route('ppat.index') }}"> Pengajuan Layanan</a></li>
-            <li><a href="{{ route('ppat.index2') }}" target="_blank">Pengajuan Terverifikasi</a></li>
-            <li><a href="{{ route('ppat.index3') }}" target="_blank">Pengambilan Berkas</a></li>
-            <li><a href="{{ route('ppat.index4') }}" target="_blank">Selesai</a></li>
+            <li><a href="{{ route('ppat.index2') }}">Pengajuan Terkonfirmasi</a></li>
+            <li><a href="{{ route('ppat.index3') }}">Pengajuan Terverifikasi</a></li>
+            <li><a href="{{ route('ppat.index4') }}">Selesai</a></li>
         </ul>
     </li>
     <li class="nav-item pcoded-hasmenu">

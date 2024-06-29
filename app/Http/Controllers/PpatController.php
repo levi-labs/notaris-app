@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\BerkasLayanan;
 use App\Models\BiayaPermohonan;
+use App\Models\BiayaTambahan;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
+use App\Models\TransaksiBiayaPermohonan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,10 +19,10 @@ class PpatController extends Controller
      */
     public function index()
     {
-        $title      = 'Daftar Pengajuan PPAT';
+        $title      = 'Daftar Pengajuan PPAT ';
 
         if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
-            $data        = Ppat::all();
+            $data        = Ppat::where('status_layanan', '1')->get();
             return view('pages.ppat.index', compact('title', 'data'));
         } else if (auth()->user()->type_user == 'client') {
             $data        = Ppat::where('user_id', auth()->user()->id)->where('status_layanan', '1')->get();
@@ -30,7 +32,7 @@ class PpatController extends Controller
     public function index2()
     {
 
-        $title      = 'Daftar Pengajuan PPAT ';
+        $title      = 'Daftar Pengajuan PPAT (Terkonfirmasi) ';
         if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
             $data        = Ppat::where('status_layanan', '2')->get();
             return view('pages.ppat.index2', compact('title', 'data'));
@@ -45,7 +47,7 @@ class PpatController extends Controller
     public function index3()
     {
 
-        $title      = 'Daftar Pengajuan PPAT ';
+        $title      = 'Daftar Pengajuan PPAT (Terverifikasi) ';
         if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
             $data        = Ppat::where('status_layanan', '3')->get();
             return view('pages.ppat.index3', compact('title', 'data'));
@@ -60,7 +62,7 @@ class PpatController extends Controller
     public function index4()
     {
 
-        $title      = 'Daftar Pengajuan PPAT ';
+        $title      = 'Daftar Pengajuan PPAT (Selesai)';
         if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
             $data        = Ppat::where('status_layanan', '4')->get();
             return view('pages.ppat.index4', compact('title', 'data'));
@@ -68,6 +70,20 @@ class PpatController extends Controller
 
             $data        = Ppat::where('user_id', auth()->user()->id)->where('status_layanan', '4')->get();
             return view('pages.ppat.index4', compact('title', 'data'));
+        }
+    }
+
+    public function indexReject()
+    {
+
+        $title      = 'Daftar Pengajuan PPAT ditolak';
+
+        if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
+            $data        = Ppat::where('status_layanan', '0')->get();
+            return view('pages.ppat.indexReject', compact('title', 'data'));
+        } else if (auth()->user()->type_user == 'client') {
+            $data        = Ppat::where('user_id', auth()->user()->id)->where('status_layanan', '0')->get();
+            return view('pages.ppat.indexReject', compact('title', 'data'));
         }
     }
 
@@ -196,6 +212,8 @@ class PpatController extends Controller
         $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
         $lampiran = json_decode($berkas->files);
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
+        $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+
 
 
         return view('pages.ppat.detail', compact(
@@ -203,7 +221,8 @@ class PpatController extends Controller
             'ppat',
             'berkas',
             'lampiran',
-            'biayalayanan'
+            'biayalayanan',
+            'biayaTambahan'
         ));
     }
 
@@ -274,24 +293,87 @@ class PpatController extends Controller
     public function confirm(Ppat $ppat)
     {
 
+
         $ppat->status_layanan = 2;
         $ppat->save();
         return redirect()->route('ppat.index2')->with('success', 'Pengajuan PPAT di konfirmasi');
     }
 
+    public function pembayaranLayanan(Ppat $ppat)
+    {
+        try {
+            $transaksi = new TransaksiBiayaPermohonan();
+            $exist = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
+
+            if ($exist != null) {
+
+                $exist->update([
+                    'status' => 'Lunas'
+                ]);
+                return redirect()->back()->with('success', 'Pembayaran PPAT Berhasil');
+            } else {
+
+                $transaksi->ppat_id = $ppat->id;
+                $transaksi->layanan_permohonan_id = $ppat->layanan_permohonan_id;
+                $transaksi->status = 'Lunas';
+                $transaksi->save();
+
+                return redirect()->back()->with('success', 'Pembayaran PPAT Berhasil');
+            }
+        } catch (\Exception $th) {
+
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
+    public function pembayaranTambahan(Ppat $ppat)
+    {
+        try {
+            $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+            foreach ($biayaTambahan as $key => $value) {
+                BiayaTambahan::where('id', $value->id)->update([
+                    'status' => 'lunas'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Pembayaran PPAT Biaya Tambahan Berhasil');
+        } catch (\Exception $th) {
+
+            return redirect()->back()->with('error', $th->getMessage());
+        }
+    }
+
     public function verifikasi(Ppat $ppat)
     {
-        $ppat->status_layanan = 3;
-        $ppat->save();
-        return redirect()->route('ppat.index3')->with('success', 'Pengajuan PPAT di verifikasi');
+        try {
+            $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->exists();
+            if ($transaksi) {
+                $ppat->status_layanan = 3;
+                $ppat->save();
+                return redirect()->route('ppat.index3')->with('success', 'Pengajuan PPAT di verifikasi');
+            }
+
+            return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function finish(Ppat $ppat)
     {
+        try {
+            $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->first();
+            if ($biayaTambahan->status == 'belum lunas') {
+                return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas (Biaya Tambahan Belum Lunas)');
+            } else {
+                $ppat->status_layanan = 4;
+                $ppat->save();
+                return redirect()->route('ppat.index4')->with('success', 'Pengajuan PPAT di selesaikan');
+            }
+        } catch (\Throwable $th) {
 
-        $ppat->status_layanan = 4;
-        $ppat->save();
-        return redirect()->route('ppat.index4')->with('success', 'Pengajuan PPAT di selesaikan');
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     /**
