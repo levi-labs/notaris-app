@@ -74,7 +74,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'nama' => $request->nama,
             'password' => bcrypt($request->password),
-            'type' => 'user',
+            'type_user' => 'client',
         ];
 
         User::create($data);

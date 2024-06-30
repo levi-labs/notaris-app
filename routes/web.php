@@ -34,8 +34,8 @@ Route::get('/', function () {
 //     return view('layouts.master');
 // });
 Route::controller(AuthController::class)->prefix('auth')->group(function () {
-    Route::get('/register', 'register')->name('register');
-    Route::post('/register', 'store')->name('register.post');
+    Route::get('/register', 'showRegister')->name('register');
+    Route::post('/register', 'register')->name('register.post');
     Route::get('/login', 'showLogin')->name('login');
     Route::post('/login', 'login')->name('login.post');
     Route::get('/logout', 'logout')->name('logout');

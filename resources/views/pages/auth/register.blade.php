@@ -61,6 +61,14 @@
 
 
         </head>
+        <style>
+            .auth-wrapper {
+                background-image: url("/assets/images/login-background.jpg");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+        </style>
 
         <!-- [ auth-signup ] start -->
         <div class="auth-wrapper">
@@ -70,27 +78,49 @@
                     <div class="row align-items-center text-center">
                         <div class="col-md-12">
                             <div class="card-body">
+                                @if (session()->has('error'))
+                                    <div class="alert alert-danger">
+                                        {{ session()->get('error') }}
+                                    </div>
+                                @endif
                                 <h4 class="f-w-400">Sign up</h4>
                                 <hr>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="Username" placeholder="Username">
-                                </div>
-                                <div class="form-group mb-3">
-                                    <input type="text" class="form-control" id="Email"
-                                        placeholder="Email address">
-                                </div>
-                                <div class="form-group mb-4">
-                                    <input type="password" class="form-control" id="Password" placeholder="Password">
-                                </div>
-                                <div class="custom-control custom-checkbox  text-left mb-4 mt-2">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                    <label class="custom-control-label" for="customCheck1">Send me the <a
-                                            href="#!"> Newsletter</a> weekly.</label>
-                                </div>
-                                <button class="btn btn-primary btn-block mb-4">Sign up</button>
-                                <hr>
-                                <p class="mb-2">Already have an account? <a href="auth-signin.html"
-                                        class="f-w-400">Signin</a></p>
+                                <form action="{{ route('register.post') }}" method="POST" id="myForm">
+                                    @csrf
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control" id="nama" placeholder="nama"
+                                            name="nama">
+                                        @error('nama')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control" id="Username" placeholder="Username"
+                                            name="username">
+                                        @error('username')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <input type="text" class="form-control" id="Email" name="email"
+                                            placeholder="Email address">
+                                        @error('email')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <input type="password" class="form-control" id="Password"
+                                            placeholder="Password" name="password">
+                                        @error('password')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+                                    <hr>
+                                    <p class="mb-2">Already have an account? <a href="{{ route('login') }}"
+                                            class="f-w-400">Signin</a></p>
+                                </form>
                             </div>
                         </div>
                     </div>
