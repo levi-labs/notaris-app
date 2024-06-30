@@ -4,10 +4,14 @@ use App\Http\Controllers\ArsipPpatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiayaPermohonanController;
 use App\Http\Controllers\BiayaTambahanController;
+use App\Http\Controllers\BiayaTambahanNotarisController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JenisPermohonanController;
 use App\Http\Controllers\LayananPermohonanController;
+use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\PpatController;
 use App\Http\Controllers\UserController;
+use App\Models\BiayaTambahanNotaris;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,9 +42,9 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard.index');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
 
     Route::controller(JenisPermohonanController::class)->prefix('permohonan')->group(function () {
         Route::get('/', 'index')->name('permohonan.index');
@@ -99,6 +103,34 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/destroy/{ppat}', 'destroy')->name('ppat.destroy');
     });
 
+    Route::controller(NotarisController::class)->prefix('notaris')->group(function () {
+
+        Route::get('/', 'index')->name('notaris.index');
+        Route::get('/index2', 'index2')->name('notaris.index2');
+        Route::get('/index3', 'index3')->name('notaris.index3');
+        Route::get('/index4', 'index4')->name('notaris.index4');
+        Route::get('/pilih-layanan', 'selectLayanan')->name('notaris.layanan');
+
+        Route::get('/reject/{notaris}', 'reject')->name('notaris.reject');
+        Route::get('/confirm/{notaris}', 'confirm')->name('notaris.confirm');
+        Route::get('/verifikasi/{notaris}', 'verifikasi')->name('notaris.verifikasi');
+        Route::get('/finish/{notaris}', 'finish')->name('notaris.finish');
+
+        Route::get('/pembayaran/{notaris}', 'pembayaranLayanan')->name('notaris.pembayaran');
+        Route::get('/pembayaran-tambahan/{notaris}', 'pembayaranTambahan')->name('notaris.pembayaran-tambahan');
+
+        Route::post('/download', 'download')->name('notaris.download');
+
+        Route::get('/cetak-notaris/{notaris}', 'cetakNotaris')->name('notaris.cetak');
+
+        Route::get('/create', 'create')->name('notaris.create');
+        Route::post('/store', 'store')->name('notaris.store');
+        Route::get('/{notaris}', 'show')->name('notaris.show');
+        Route::get('/edit/{notaris}', 'edit')->name('notaris.edit');
+        Route::put('/update/{notaris}', 'update')->name('notaris.update');
+        Route::delete('/destroy/{notaris}', 'destroy')->name('notaris.destroy');
+    });
+
     Route::controller(ArsipPpatController::class)->prefix('arsip-ppat')->group(function () {
         Route::get('/', 'index')->name('arsip-ppat.index');
         Route::get('/create/{id}', 'create')->name('arsip-ppat.create');
@@ -119,6 +151,16 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/destroy/{biayaTambahan}', 'destroy')->name('biaya-tambahan.destroy');
     });
 
+    Route::controller(BiayaTambahanNotarisController::class)->prefix('biaya-tambahan-notaris')->group(function () {
+        Route::get('/', 'index')->name('biaya-tambahan-notaris.index');
+        Route::get('/create', 'create')->name('biaya-tambahan-notaris.create');
+        Route::post('/store', 'store')->name('biaya-tambahan-notaris.store');
+        Route::get('/{biayaTambahanNotaris}', 'show')->name('biaya-tambahan-notaris.show');
+        Route::get('/edit/{biayaTambahanNotaris}', 'edit')->name('biaya-tambahan-notaris.edit');
+        Route::put('/update/{biayaTambahanNotaris}', 'update')->name('biaya-tambahan-notaris.update');
+        Route::get('/destroy/{biayaTambahanNotaris}', 'destroy')->name('biaya-tambahan-notaris.destroy');
+    });
+
     Route::controller(UserController::class)->prefix('user')->group(function () {
         Route::get('/', 'index')->name('user.index');
         Route::get('/create', 'create')->name('user.create');
@@ -127,5 +169,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/update/{user}', 'update')->name('user.update');
         Route::delete('/destroy/{user}', 'destroy')->name('user.destroy');
         Route::get('/reset-password/{user}', 'resetPassword')->name('user.reset-password');
+        Route::get('/ubah-password', 'ubahPassword')->name('user.ubah-password');
+        Route::patch('/update-password/{user}', 'updatePassword')->name('user.update-password');
     });
 });

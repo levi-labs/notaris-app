@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BiayaTambahan;
-use App\Models\BiayaTambahanPpat;
+use App\Models\BiayaTambahanNotaris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class BiayaTambahanController extends Controller
+class BiayaTambahanNotarisController extends Controller
 {
     public function store(Request $request)
     {
@@ -22,10 +21,10 @@ class BiayaTambahanController extends Controller
         }
 
         try {
-            $biaya = BiayaTambahanPpat::create([
+            $biaya = BiayaTambahanNotaris::create([
                 'nama_biaya' => $request->nama_biaya,
                 'nominal' => $request->nominal,
-                'ppat_id' => $request->ppat_id,
+                'notaris_id' => $request->notaris_id,
                 'status' => 'belum lunas',
             ]);
             return response()->json(['success' => 'Data tersimpan'], 201);
@@ -36,7 +35,7 @@ class BiayaTambahanController extends Controller
 
     public function destroy($id)
     {
-        $biaya = BiayaTambahanPpat::find($id);
+        $biaya = BiayaTambahanNotaris::find($id);
         $biaya->delete();
 
         return back()->with('success', 'Data terhapus');

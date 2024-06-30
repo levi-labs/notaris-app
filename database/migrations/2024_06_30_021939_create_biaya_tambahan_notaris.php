@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('biaya_tambahan', function (Blueprint $table) {
+        Schema::create('biaya_tambahan_notaris', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('ppat_id')->unsigned()->nullable();
+            $table->bigInteger('notaris_id')->unsigned()->nullable();
+            $table->string('nama_biaya');
             $table->string('nominal');
+            $table->enum('status', ['lunas', 'belum lunas']);
             $table->timestamps();
-            $table->foreign('ppat_id')->references('id')->on('ppat')->onDelete('cascade');
+            $table->foreign('notaris_id')->references('id')->on('notaris')->onDelete('cascade');
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('biaya_tambahan');
+        Schema::dropIfExists('biaya_tambahan_notaris');
     }
 };

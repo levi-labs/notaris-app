@@ -58,8 +58,9 @@
             <a class="mobile-menu" id="mobile-collapse" href="#!"><span></span></a>
             <a href="#!" class="b-brand">
                 <!-- ========   change your logo hear   ============ -->
-                <img src="{{ asset('assets/images/logo.png') }}" alt="" class="logo">
-                <img src="{{ asset('assets/images/logo-icon.png') }}" alt="" class="logo-thumb">
+                {{-- <img src="{{ asset('assets/images/logo.png') }}" alt="" class="logo">
+                <img src="{{ asset('assets/images/logo-icon.png') }}" alt="" class="logo-thumb"> --}}
+                <h5 class="m-b-0 text-white">Notaris Lubis App</h5>
             </a>
             <a href="#!" class="mob-toggler">
                 <i class="feather icon-more-vertical"></i>
@@ -154,7 +155,8 @@
                                 </a>
                             </div>
                             <ul class="pro-body">
-                                <li><a href="user-profile.html" class="dropdown-item"><i class="feather icon-user"></i>
+                                <li><a href="{{ route('user.ubah-password') }}" class="dropdown-item"><i
+                                            class="feather icon-user"></i>
                                         Ubah Password</a></li>
                                 <li><a href="{{ route('logout') }}" class="dropdown-item"><i
                                             class="feather icon-log-out"></i>

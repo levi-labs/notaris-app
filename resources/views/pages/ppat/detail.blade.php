@@ -28,7 +28,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>{{ $title }}</h3>
-
+                        @if (session()->has('file'))
+                            <div class="alert alert-danger mt-4">
+                                {{ session()->get('file') }}
+                            </div>
+                        @endif
                         @if (session()->has('success'))
                             <div class="alert alert-success mt-4">
                                 {{ session()->get('success') }}
@@ -307,10 +311,13 @@
                         }
                     </style>
                     @if ($ppat->status_layanan == 4)
-                        <div class="text-center">
-                            <a href="{{ route('arsip-ppat.create', $ppat->id) }}"
-                                class="btn btn-arsipkan my-2 mx-1 text-center">Arsipkan</a>
-                        </div>
+                        @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                            <div class="text-center">
+                                <a href="{{ route('arsip-ppat.create', $ppat->id) }}"
+                                    class="btn btn-arsipkan my-2 mx-1 text-center">Arsipkan</a>
+                            </div>
+                        @endif
+
                         <div class="text-center">
                             <a href="{{ route('ppat.cetak', $ppat->id) }}"
                                 class="btn btn-cetak my-2 mx-1 text-center">Print</a>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -118,6 +119,13 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('success', 'User deleted successfully');
     }
 
+    /**
+     * Resets the password for a user.
+     *
+     * @param string $id The ID of the user whose password is being reset.
+     * @throws \Throwable If there is an error resetting the password.
+     * @return \Illuminate\Http\RedirectResponse The response to redirect the user after resetting the password.
+     */
     public function resetPassword(string $id)
     {
         try {
@@ -129,6 +137,47 @@ class UserController extends Controller
             return redirect()->route('user.index')->with('success', 'Password Reset successfully');
         } catch (\Throwable $th) {
 
+            return back()->with('error', $th->getMessage());
+        }
+    }
+    /**
+     * Display the view for changing the user's password.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function ubahPassword()
+    {
+        $title = 'Ubah Password';
+        return view('pages.auth.change-password', compact('title'));
+    }
+
+    /**
+     * Update the password for a user.
+     *
+     * @param Request $request The request object containing the password information.
+     * @param string $user The ID of the user whose password is being updated.
+     * @return \Illuminate\Http\RedirectResponse The response to redirect the user after updating the password.
+     * @throws \Exception If there is an error updating the password.
+     */
+    public function updatePassword(Request $request, $user)
+    {
+
+        $this->validate($request, [
+            'password_lama' => 'required',
+            'password_baru' => 'required|min:6',
+        ]);
+
+        try {
+            $user  = User::where('id', auth()->user()->id)->first();
+            if (Hash::check($request->password_lama, $user->password)) {
+                $user->update([
+                    'password' => bcrypt($request->password_baru)
+                ]);
+                return redirect()->route('dashboard')->with('success', 'Password Changed successfully');
+            } else {
+                return back()->with('error', 'Password lama tidak sesuai');
+            }
+        } catch (\Exception $th) {
             return back()->with('error', $th->getMessage());
         }
     }

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('biaya_tambahan', function (Blueprint $table) {
-            $table->enum('status', ['lunas', 'belum lunas'])->after('nominal');
+        Schema::table('ppat', function (Blueprint $table) {
+            $table->string('file_ppat')->before('created_at')->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('biaya_tambahan', function (Blueprint $table) {
-            $table->dropColumn('status');
+        Schema::table('ppat', function (Blueprint $table) {
+            $table->dropColumn('file_ppat');
         });
     }
 };

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BerkasLayanan;
 use App\Models\BiayaPermohonan;
 use App\Models\BiayaTambahan;
+use App\Models\BiayaTambahanPpat;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
 use App\Models\TransaksiBiayaPermohonan;
@@ -212,7 +213,7 @@ class PpatController extends Controller
         $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
         $lampiran = json_decode($berkas->files);
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
-        $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+        $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
 
 
@@ -260,7 +261,7 @@ class PpatController extends Controller
         $lampiran = json_decode($berkas->files);
 
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
-        $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+        $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
 
         return view('pages.ppat.cetak-ppat', compact(
@@ -350,9 +351,9 @@ class PpatController extends Controller
     public function pembayaranTambahan(Ppat $ppat)
     {
         try {
-            $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->get();
+            $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
             foreach ($biayaTambahan as $key => $value) {
-                BiayaTambahan::where('id', $value->id)->update([
+                BiayaTambahanPpat::where('id', $value->id)->update([
                     'status' => 'lunas'
                 ]);
             }
@@ -383,7 +384,7 @@ class PpatController extends Controller
     public function finish(Ppat $ppat)
     {
         try {
-            $biayaTambahan = BiayaTambahan::where('ppat_id', $ppat->id)->first();
+            $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
             if ($biayaTambahan->status == 'belum lunas') {
                 return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas (Biaya Tambahan Belum Lunas)');
             } else {

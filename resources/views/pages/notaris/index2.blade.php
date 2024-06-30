@@ -30,10 +30,10 @@
                                 {{ session()->get('error') }}
                             </div>
                         @endif
-                        <a href="{{ route('ppat.layanan') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
+                        <a href="{{ route('notaris.layanan') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
                         <div class="alert alert-info my-2">
-                            <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan yang sudah selesai masih bisa di
-                            akses di detail pengajuan.
+                            <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan sudah dikonfirmasi silahkan cek
+                            detail pengajuan
                         </div>
                     </div>
                     <div class="card-body table-border-style">
@@ -107,20 +107,19 @@
 
                                             </td>
                                             <td>
-                                                <a href="{{ route('ppat.show', $item->id) }}" class="btn btn-secondary">
+                                                <a href="{{ route('notaris.show', $item->id) }}" class="btn btn-secondary">
                                                     Detail
                                                 </a>
-                                                {{-- <a href="{{ route('ppat.edit', $item->id) }}"
+                                                {{-- <a href="{{ route('notaris.edit', $item->id) }}"
                                                     class="btn btn-warning">Edit</a> --}}
                                                 @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
-                                                    <form action="{{ route('ppat.destroy', $item->id) }}" method="POST"
+                                                    <form action="{{ route('notaris.destroy', $item->id) }}" method="POST"
                                                         class="d-inline">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger">Batalkan</button>
                                                     </form>
                                                 @endif
-
 
                                             </td>
                                         </tr>

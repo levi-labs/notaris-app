@@ -112,12 +112,14 @@
                                                 </a>
                                                 {{-- <a href="{{ route('ppat.edit', $item->id) }}"
                                                     class="btn btn-warning">Edit</a> --}}
-                                                <form action="{{ route('ppat.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Batalkan</button>
-                                                </form>
+                                                @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                    <form action="{{ route('ppat.destroy', $item->id) }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Batalkan</button>
+                                                    </form>
+                                                @endif
 
                                             </td>
                                         </tr>
