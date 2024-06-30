@@ -6,30 +6,37 @@
                 <div class="card">
                     <div class="card-header">
                         <h5>{{ $title }}</h5>
-
+                        @if (session()->has('error'))
+                            <div class="alert alert-danger">
+                                {{ session()->get('error') }}
+                            </div>
+                        @endif
 
                     </div>
 
                     <div class="card-body">
-                        @if (isset($ppat_id) && isset($layanan_permohonan_id))
-                            <a class="btn btn-secondary" href="{{ route('ppat.show', $ppat->id) }}">Kembali</a>
+                        @if (isset($notaris_id) && isset($layanan_permohonan_id))
+                            <a class="btn btn-secondary" href="{{ route('notaris.show', $notaris->id) }}">Kembali</a>
+                        @else
+                            <a class="btn btn-secondary" href="{{ route('arsip-notaris.index') }}">Kembali</a>
                         @endif
                         {{-- <h5>Form controls</h5> --}}
                         <div class="row justify-content-center">
 
                             <div class="col-md-6">
-                                <form action="{{ route('arsip-ppat.store') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('arsip-notaris.store') }}" method="POST"
+                                    enctype="multipart/form-data">
                                     @csrf
-                                    @if (isset($ppat_id) && isset($layanan_permohonan_id))
-                                        <input type="hidden" name="ppat_id" value="{{ $ppat->id }}">
+                                    @if (isset($notaris_id) && isset($layanan_permohonan_id))
+                                        <input type="hidden" name="notaris_id" value="{{ $notaris->id }}">
                                         <input type="hidden" name="layanan_permohonan_id"
-                                            value="{{ $ppat->layanan_permohonan_id }}">
+                                            value="{{ $notaris->layanan_permohonan_id }}">
                                     @else
                                         <div class="form-group">
-                                            <label for="exampleFormControlSelect1">Daftar PPAT </label>
-                                            <select class="form-control" id="exampleFormControlSelect1" name="ppat_id">
-                                                <option selected disabled>Pilih PPAT Yang Dituju</option>
-                                                @foreach ($ppat as $item)
+                                            <label for="exampleFormControlSelect1">Daftar Pengajuan Notaris </label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="notaris_id">
+                                                <option selected disabled>Pilih Pengajuan Notaris yang dituju</option>
+                                                @foreach ($notaris as $item)
                                                     <option value="{{ $item->id }}">{{ $item->nomor_pengajuan }}
                                                     </option>
                                                 @endforeach
@@ -70,5 +77,4 @@
             </div>
         </div>
     </div>
-    <script></script>
 @endsection

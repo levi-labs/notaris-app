@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArsipNotarisController;
 use App\Http\Controllers\ArsipPpatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BiayaPermohonanController;
@@ -133,12 +134,26 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::controller(ArsipPpatController::class)->prefix('arsip-ppat')->group(function () {
         Route::get('/', 'index')->name('arsip-ppat.index');
-        Route::get('/create/{id}', 'create')->name('arsip-ppat.create');
+        Route::get('/create/{id?}', 'create')->name('arsip-ppat.create');
         Route::post('/store', 'store')->name('arsip-ppat.store');
         Route::get('/{arsipPpat}', 'show')->name('arsip-ppat.show');
         Route::get('/edit/{arsipPpat}', 'edit')->name('arsip-ppat.edit');
         Route::put('/update/{arsipPpat}', 'update')->name('arsip-ppat.update');
         Route::delete('/destroy/{arsipPpat}', 'destroy')->name('arsip-ppat.destroy');
+
+        Route::post('/download', 'download')->name('arsip-ppat.download');
+    });
+
+    Route::controller(ArsipNotarisController::class)->prefix('arsip-notaris')->group(function () {
+        Route::get('/', 'index')->name('arsip-notaris.index');
+        Route::get('/create/{id?}', 'create')->name('arsip-notaris.create');
+        Route::post('/store', 'store')->name('arsip-notaris.store');
+        Route::get('/{arsipNotaris}', 'show')->name('arsip-notaris.show');
+        Route::get('/edit/{arsipNotaris}', 'edit')->name('arsip-notaris.edit');
+        Route::put('/update/{arsipNotaris}', 'update')->name('arsip-notaris.update');
+        Route::delete('/destroy/{arsipNotaris}', 'destroy')->name('arsip-notaris.destroy');
+
+        Route::post('/download', 'download')->name('arsip-notaris.download');
     });
 
     Route::controller(BiayaTambahanController::class)->prefix('biaya-tambahan')->group(function () {

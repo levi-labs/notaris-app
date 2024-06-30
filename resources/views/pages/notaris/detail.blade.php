@@ -93,7 +93,7 @@
                                     <li>Terimakasih</li>
                                 </ol>
                             </div>
-                        @elseif ($notaris->status_layanan == 4)
+                        @elseif ($notaris->status_layanan == 3)
                             <div class="alert alert-info">
                                 <h6>
                                     <i class="fa fa-info-circle"></i> INFO
@@ -191,15 +191,18 @@
                                         $notaris->id,
                                     )->first();
                                 @endphp
-                                @if ($transaksi == null)
-                                    <a href="{{ route('notaris.pembayaran', $notaris->id) }}"
-                                        class="btn btn-primary float-right">Bayar</a>
-                                @elseif ($transaksi->count() > 0 && $transaksi->status == 'lunas')
-                                    <button class="btn btn-primary float-right disabled">Sudah Lunas</button>
-                                @elseif ($transaksi->count() > 0 && $transaksi->status == 'belum lunas')
-                                    <a href="{{ route('notaris.pembayaran', $notaris->id) }}"
-                                        class="btn btn-primary float-right">Bayar</a>
+                                @if ($notaris->status_layanan == 2)
+                                    @if ($transaksi == null)
+                                        <a href="{{ route('notaris.pembayaran', $notaris->id) }}"
+                                            class="btn btn-primary float-right">Bayar</a>
+                                    @elseif ($transaksi->count() > 0 && $transaksi->status == 'lunas')
+                                        <button class="btn btn-primary float-right disabled">Sudah Lunas</button>
+                                    @elseif ($transaksi->count() > 0 && $transaksi->status == 'belum lunas')
+                                        <a href="{{ route('notaris.pembayaran', $notaris->id) }}"
+                                            class="btn btn-primary float-right">Bayar</a>
+                                    @endif
                                 @endif
+
                                 <div class="table-responsive">
                                     <table class="table table-hover mt-2">
                                         <thead class="text-center">
@@ -214,8 +217,14 @@
                                             </tr>
                                         </thead>
                                         <tbody class="text-center">
+                                            @php
+                                                $nominal_layanan = 0;
+                                            @endphp
 
                                             @foreach ($biayalayanan as $layanan)
+                                                @php
+                                                    $nominal_layanan += $layanan->harga;
+                                                @endphp
                                                 <tr>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $layanan->nama_biaya }}</td>
@@ -223,6 +232,11 @@
                                                     <td>{{ 'Rp ' . number_format($layanan->harga, 0, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
+
+                                            <tr></tr>
+                                            <td colspan="3">Total:</td>
+                                            <td>{{ 'Rp ' . number_format($nominal_layanan, 0, ',', '.') }}</td>
+                                            </tr>
 
 
 
@@ -253,8 +267,14 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="text-center">
+                                                @php
+                                                    $nominal_tambahan = 0;
+                                                @endphp
 
                                                 @foreach ($biayaTambahan as $tambahan)
+                                                    @php
+                                                        $nominal_tambahan += $tambahan->nominal;
+                                                    @endphp
                                                     <tr>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $tambahan->nama_biaya }}</td>
@@ -267,6 +287,11 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
+                                                <tr class="text-center">
+                                                    <td colspan="3">Total:</td>
+                                                    <td> {{ 'Rp ' . number_format($nominal_tambahan, 0, ',', '.') }}
+                                                    </td>
+                                                </tr>
                                                 @if ($notaris->status_layanan == 3)
                                                     <tr>
                                                         <td colspan="3"></td>
@@ -290,10 +315,21 @@
 
                     @if ($notaris->status_layanan == 4)
                         @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
-                            <div class="text-center">
-                                <a href="{{ route('arsip-ppat.create', $notaris->id) }}"
-                                    class="btn btn-arsipkan my-2 mx-1 text-center">Arsipkan</a>
-                            </div>
+                            @php
+                                $check = \App\Models\ArsipNotaris::where('notaris_id', $notaris->id)->first();
+                            @endphp
+                            @if ($check == null)
+                                <div class="text-center">
+                                    <a href="{{ route('arsip-notaris.create', $notaris->id) }}"
+                                        class="btn btn-arsipkan my-2 mx-1 text-center">Arsipkan</a>
+                                </div>
+                            @elseif ($check != null)
+                                <div class="text-center">
+                                    <button class="btn btn-arsipkan my-2 mx-1 text-center" disabled>Sudah di arsip</button>
+                                    {{-- <a href="#" class="btn btn-arsipkan my-2 mx-1 text-center" disabled>Sudah di
+                                    arsip</a> --}}
+                                </div>
+                            @endif
                         @endif
 
                         <div class="text-center">

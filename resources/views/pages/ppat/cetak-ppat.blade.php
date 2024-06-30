@@ -21,31 +21,6 @@
 
 
     <div class="table-print">
-
-        <table class="table table-bordered d-print-table" width="100%" border="2"
-            style="border-collapse: collapse; border: 2px solid black;">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Berkas</th>
-                    <th>Jenis File</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for ($i = 0; $i < count($lampiran); $i++)
-                    @php
-                        $string_array = explode('/', $lampiran[$i]);
-                    @endphp
-                    <tr>
-                        <td>{{ $i + 1 }}</td>
-                        <td>{{ $string_array[2] }}</td>
-                        <td>PDF</td>
-                    </tr>
-                @endfor
-            </tbody>
-        </table>
-    </div>
-    <div class="table-print">
         <h5>Biaya Layanan</h5>
         <table class="table table-bordered d-print-table" width="100%" border="2"
             style="border-collapse: collapse; border: 2px solid black;">

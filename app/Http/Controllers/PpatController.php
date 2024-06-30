@@ -125,11 +125,22 @@ class PpatController extends Controller
     {
 
         // Validate request based on selected layanan_permohonan_id
-        $this->rulesFile($request);
+        // $this->rulesFile($request);
+        $request->validate([
+            'layanan_permohonan_id' => 'required',
+            'nama_pihak_pertama' => 'required',
+            'nama_pihak_kedua' => 'required',
+            'alamat_asset_termohon' => 'required',
+            'file_ppat' => 'required|mimes:pdf|max:10000',
+        ]);
 
-
-        DB::beginTransaction();
         try {
+            $file = $request->file('file_ppat');
+
+            $namauser = auth()->user()->username;
+            $path = $file->store('public/' . $namauser);
+
+
             $data           = new Ppat();
             $data->nama_pihak_pertama = $request->nama_pihak_pertama;
             $data->nama_pihak_kedua = $request->nama_pihak_kedua;
@@ -138,25 +149,26 @@ class PpatController extends Controller
             $data->user_id = auth()->user()->id;
             $data->status_layanan = 1;
             $data->nomor_pengajuan = $data->getKodePengajuanPPAT();
+            $data->file_ppat = $path;
             $data->save();
 
-            $temp_files = $this->handleUpload($request);
-            $berkas_layanan = new BerkasLayanan();
+            // $temp_files = $this->handleUpload($request);
+            // $berkas_layanan = new BerkasLayanan();
 
-            $berkas_layanan->ppat_id = $data->id;
-            $berkas_layanan->user_id = auth()->user()->id;
+            // $berkas_layanan->ppat_id = $data->id;
+            // $berkas_layanan->user_id = auth()->user()->id;
 
-            $berkas_layanan->files = json_encode($temp_files);
+            // $berkas_layanan->files = json_encode($temp_files);
 
-            $berkas_layanan->save();
+            // $berkas_layanan->save();
 
-            DB::commit();
+            // DB::commit();
 
 
 
             return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil');
         } catch (\Throwable $th) {
-            DB::rollBack();
+            // DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
@@ -209,9 +221,10 @@ class PpatController extends Controller
      */
     public function show(Ppat $ppat)
     {
-        $title  = 'Detail Pengajuan PPAT';
-        $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
-        $lampiran = json_decode($berkas->files);
+        $subtitle = strtolower($ppat->layanan->nama);
+        $title  = 'Detail Pengajuan ' . $subtitle;
+        // $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+        // $lampiran = json_decode($berkas->files);
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
@@ -220,8 +233,6 @@ class PpatController extends Controller
         return view('pages.ppat.detail', compact(
             'title',
             'ppat',
-            'berkas',
-            'lampiran',
             'biayalayanan',
             'biayaTambahan'
         ));
@@ -257,8 +268,8 @@ class PpatController extends Controller
     {
 
         $title  = 'Cetak PPAT';
-        $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
-        $lampiran = json_decode($berkas->files);
+        // $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+        // $lampiran = json_decode($berkas->files);
 
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
@@ -267,8 +278,6 @@ class PpatController extends Controller
         return view('pages.ppat.cetak-ppat', compact(
             'title',
             'ppat',
-            'berkas',
-            'lampiran',
             'biayalayanan',
             'biayaTambahan'
         ));

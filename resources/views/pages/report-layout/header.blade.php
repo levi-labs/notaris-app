@@ -8,9 +8,9 @@
 
                     <font size="4"> <b>NOTARIS RUMONDA KESUMA LUBIS</b></font><br>
 
-                    <font size="2">JL. H. Djole ( Bantargebang-Setu ) RT 001 RW 003 ,Padurenan </font><br>
-                    <font size="2"><b>Mustika Jaya, Bekasi 16340, Indonesia</b></font><br>
-                    <font size="2"><b>Tel: (021) 8259 5311 / 0888 1300 028</b></font><br>
+                    <font size="2">JL. Dukuh II No.2, Dukuh, Kec. Kramat jati</font><br>
+                    <font size="2"><b>Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13550</b></font><br>
+                    <font size="2"><b>Tel: 081290003981</b></font><br>
 
                 </td>
             </center>

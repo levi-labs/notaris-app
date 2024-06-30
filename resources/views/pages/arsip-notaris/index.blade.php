@@ -30,7 +30,7 @@
                                 {{ session()->get('error') }}
                             </div>
                         @endif
-                        <a href="{{ route('arsip-ppat.create') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
+                        <a href="{{ route('arsip-notaris.create') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
                         {{-- <div class="alert alert-info my-2">
                             <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan dapat dibatalkan jika belom
                             dikonfirmasi, jika sudah dikonfirmasi, pengajuan dapat dibatalkan dengan menghubungi
@@ -88,7 +88,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <form action="{{ route('arsip-ppat.download') }}" method="POST">
+                                                <form action="{{ route('arsip-notaris.download') }}" method="POST">
                                                     @csrf <!-- Add this line to include a CSRF token -->
                                                     <input type="hidden" name="filename" value="{{ $item->file }}">
                                                     <button type="submit" class="btn btn-dark">
@@ -100,16 +100,16 @@
                                                 </form>
                                             </td>
                                             <td>
-                                                <a href="{{ route('ppat.show', $item->ppat_id) }}"
+                                                <a href="{{ route('notaris.show', $item->notaris_id) }}"
                                                     class="btn btn-secondary">
                                                     Detail
                                                 </a>
-                                                <a href="{{ route('ppat.cetak', $item->ppat_id) }}" target="_blank"
+                                                <a href="{{ route('notaris.cetak', $item->notaris_id) }}" target="_blank"
                                                     class="btn btn-light shadow-sm">Print</a>
                                                 {{-- <a href="{{ route('ppat.edit', $item->id) }}"
                                                     class="btn btn-warning">Edit</a> --}}
-                                                <form action="{{ route('arsip-ppat.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline">
+                                                <form action="{{ route('arsip-notaris.destroy', $item->id) }}"
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger">hapus</button>

@@ -30,7 +30,7 @@
                             <i class="feather icon-briefcase"></i>
                         </div>
                         <div class="col-sm-9">
-                            <h4>{{ $data }}</h4>
+                            <h4>{{ $total_ppat }}</h4>
                             <h6>Pengajuan PPAT</h6>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                             <i class="feather icon-briefcase"></i>
                         </div>
                         <div class="col-sm-9">
-                            <h4>4000 +</h4>
+                            <h4>{{ $total_notaris }}</h4>
                             <h6>Pengajuan Notaris</h6>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                                     <i class="icon feather icon-eye text-c-green mb-1 d-block"></i>
                                 </div>
                                 <div class="col-sm-8 text-md-center">
-                                    <h5>{{ $data_1 }}</h5>
+                                    <h5>{{ $data_5 }}</h5>
                                     <span>Pengajuan</span>
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                                     <i class="icon feather icon-thumbs-up text-c-red mb-1 d-block"></i>
                                 </div>
                                 <div class="col-sm-8 text-md-center">
-                                    <h5>{{ $data_2 }}</h5>
+                                    <h5>{{ $data_6 }}</h5>
                                     <span>Terkonfirmasi</span>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@
                                     <i class="icon feather icon-file-text text-c-blue mb-1 d-block"></i>
                                 </div>
                                 <div class="col-sm-8 text-md-center">
-                                    <h5>{{ $data_3 }}</h5>
+                                    <h5>{{ $data_7 }}</h5>
                                     <span>Terverifikasi</span>
                                 </div>
                             </div>
@@ -145,7 +145,7 @@
                                     <i class="icon feather icon-check-square text-c-yellow mb-1 d-block"></i>
                                 </div>
                                 <div class="col-sm-8 text-md-center">
-                                    <h5>{{ $data_4 }}</h5>
+                                    <h5>{{ $data_8 }}</h5>
                                     <span>Terselesaikan</span>
                                 </div>
                             </div>
@@ -195,14 +195,7 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <div class="chk-option">
-                                                <label
-                                                    class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                                                    <input type="checkbox" class="custom-control-input">
-                                                    <span class="custom-control-label"></span>
-                                                </label>
-                                            </div>
-                                            Assigned
+                                            Nomor Pengajuan
                                         </th>
                                         <th>Name</th>
                                         <th>Due Date</th>
@@ -210,7 +203,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $status_ppat;
+                                    @endphp
                                     @foreach ($daftar_ppat as $ppat)
+                                        @php
+                                            if ($ppat->status_layanan == '1') {
+                                                $status_ppat = 'Menunggu Konfirmasi';
+                                            } elseif ($ppat->status_layanan == '2') {
+                                                $status_ppat = 'Terkonfirmasi';
+                                            } elseif ($ppat->status_layanan == '3') {
+                                                $status_ppat = 'Terverifikasi';
+                                            } elseif ($ppat->status_layanan == '4') {
+                                                $status_ppat = 'Selesai';
+                                            }
+                                        @endphp
                                         <tr>
                                             <td>
                                                 {{ $ppat->nomor_pengajuan }}
@@ -218,7 +225,7 @@
                                             <td>{{ $ppat->layanan->nama }}</td>
                                             <td>{{ $ppat->created_at->format('d M Y') }}</td>
                                             <td class="text-right"><label
-                                                    class="badge badge-light-danger">{{ $ppat->status_layanan }}</label>
+                                                    class="badge badge-light-success">{{ $status_ppat }}</label>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -262,30 +269,38 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                            <div class="chk-option">
-                                                <label
-                                                    class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                                                    <input type="checkbox" class="custom-control-input">
-                                                    <span class="custom-control-label"></span>
-                                                </label>
-                                            </div>
-                                            Assigned
+                                            Nomor Pengajuan
                                         </th>
-                                        <th>Name</th>
-                                        <th>Due Date</th>
-                                        <th class="text-right">Priority</th>
+                                        <th>Name Layanan</th>
+                                        <th>Tanggal</th>
+                                        <th class="text-right">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($daftar_ppat as $ppat)
+                                    @php
+                                        $status_notaris;
+                                    @endphp
+                                    @foreach ($daftar_notaris as $notaris)
+                                        @php
+                                            if ($notaris->status_layanan == '1') {
+                                                $status_notaris = 'Menunggu Konfirmasi';
+                                            } elseif ($notaris->status_layanan == '2') {
+                                                $status_notaris = 'Terkonfirmasi';
+                                            } elseif ($notaris->status_layanan == '3') {
+                                                $status_notaris = 'Terverifikasi';
+                                            } elseif ($notaris->status_layanan == '4') {
+                                                $status_notaris = 'Selesai';
+                                            }
+                                        @endphp
                                         <tr>
                                             <td>
-                                                {{ $ppat->nomor_pengajuan }}
+                                                {{ $notaris->nomor_pengajuan }}
                                             </td>
-                                            <td>{{ $ppat->layanan->nama }}</td>
-                                            <td>{{ $ppat->created_at->format('d M Y') }}</td>
+                                            <td>{{ $notaris->layanan->nama }}</td>
+                                            <td>{{ $notaris->created_at->format('d M Y') }}</td>
+
                                             <td class="text-right"><label
-                                                    class="badge badge-light-danger">{{ $ppat->status_layanan }}</label>
+                                                    class="badge badge-light-success">{{ $status_notaris }}</label>
                                             </td>
                                         </tr>
                                     @endforeach

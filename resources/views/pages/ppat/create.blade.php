@@ -63,24 +63,19 @@
                                         </h5>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <span class="text-dark">Berkas Syarat Pengajuan dijadikan satu file *</span>
+                                    <div class="custom-file my-2">
+                                        <input type="file" class="custom-file-input" id="file_ppat" name="file_ppat">
+                                        <label class="custom-file-label" for="file_ppat">Choose
+                                            file</label>
+                                        @error('file_ppat')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
 
 
-
-                                @switch(strtolower($data->nama))
-                                    @case('akta jual beli')
-                                        @include('pages.syarat-layanan.akta-jual-beli')
-                                    @break
-
-                                    @case('akta hibah')
-                                        @include('pages.syarat-layanan.akta-hibah')
-                                    @break
-
-                                    @case('akta pembagian hak bersama')
-                                        @include('pages.syarat-layanan.akta-pembagian-bersama')
-                                    @break
-
-                                    @default
-                                @endswitch
 
                                 <button type="submit" class="btn btn-primary float-right">Submit</button>
                             </form>
@@ -114,3 +109,19 @@
         });
     </script> --}}
 @endsection
+
+{{-- @switch(strtolower($data->nama))
+@case('akta jual beli')
+    @include('pages.syarat-layanan.akta-jual-beli')
+@break
+
+@case('akta hibah')
+    @include('pages.syarat-layanan.akta-hibah')
+@break
+
+@case('akta pembagian hak bersama')
+    @include('pages.syarat-layanan.akta-pembagian-bersama')
+@break
+
+@default
+@endswitch --}}

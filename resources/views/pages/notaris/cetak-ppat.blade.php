@@ -17,7 +17,6 @@
         <p>Pihak Pertama : {{ $notaris->nama_pihak_pertama }}</p>
         <p>Pihak Kedua : {{ $notaris->nama_pihak_kedua }}</p>
         <p>Alamat Asset : {{ $notaris->alamat_asset_termohon }}</p>
-        <p>File : {{ $notaris->file }}</p>
     </div>
     <div class="table-print">
         <h5>Biaya Layanan</h5>

@@ -27,4 +27,10 @@ class ArsipPpat extends Model
 
         return $number;
     }
+
+    public function layanan()
+    {
+
+        return $this->belongsTo(LayananPermohonan::class, 'layanan_permohonan_id', 'id');
+    }
 }
