@@ -159,22 +159,31 @@
                                         </table>
                                         <hr>
                                         @if ($notaris->status_layanan == 1)
-                                            <a href="{{ route('notaris.confirm', $notaris->id) }}"
-                                                class="btn btn-primary">Proses</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('notaris.confirm', $notaris->id) }}"
+                                                    class="btn btn-primary">Proses</a>
+                                            @endif
+
                                             <a href="{{ route('notaris.reject', $notaris->id) }}"
                                                 class="btn btn-danger">Reject</a>
                                         @elseif ($notaris->status_layanan == 2)
-                                            <a href="{{ route('notaris.verifikasi', $notaris->id) }}"
-                                                class="btn btn-primary">Verifikasi</a>
-                                            <a href="{{ route('notaris.reject', $notaris->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('notaris.verifikasi', $notaris->id) }}"
+                                                    class="btn btn-primary">Verifikasi</a>
+                                                <a href="{{ route('notaris.reject', $notaris->id) }}"
+                                                    class="btn btn-danger">Reject</a>
+                                            @endif
+
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
                                                 Tambahan</button> --}}
                                         @elseif ($notaris->status_layanan == 3)
-                                            <a href="{{ route('notaris.finish', $notaris->id) }}"
-                                                class="btn btn-primary">Selesai</a>
-                                            <a href="{{ route('notaris.reject', $notaris->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('notaris.finish', $notaris->id) }}"
+                                                    class="btn btn-primary">Selesai</a>
+                                                <a href="{{ route('notaris.reject', $notaris->id) }}"
+                                                    class="btn btn-danger">Reject</a>
+                                            @endif
+
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
                                                 Tambahan</button> --}}
                                         @endif
@@ -281,9 +290,16 @@
                                                         <td>{{ 'Rp ' . number_format($tambahan->nominal, 0, ',', '.') }}
                                                         </td>
                                                         <td>
-                                                            <a
-                                                                href="{{ route('biaya-tambahan-notaris.destroy', $tambahan->id) }}"><i
-                                                                    class="fas fa-trash text-danger"></i></a>
+                                                            @if ($notaris->status_layanan == 3)
+                                                                <a
+                                                                    href="{{ route('biaya-tambahan-notaris.destroy', $tambahan->id) }}"><i
+                                                                        class="fas fa-trash text-danger"></i></a>
+                                                            @else
+                                                                <a href="{{ route('biaya-tambahan-notaris.destroy', $tambahan->id) }}"
+                                                                    onclick="return false"><i
+                                                                        class="fas fa-trash text-danger"></i></a>
+                                                            @endif
+
                                                         </td>
                                                     </tr>
                                                 @endforeach

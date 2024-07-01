@@ -159,22 +159,31 @@
                                         </table>
                                         <hr>
                                         @if ($ppat->status_layanan == 1)
-                                            <a href="{{ route('ppat.confirm', $ppat->id) }}"
-                                                class="btn btn-primary">Proses</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('ppat.confirm', $ppat->id) }}"
+                                                    class="btn btn-primary">Proses</a>
+                                            @endif
+
                                             <a href="{{ route('ppat.reject', $ppat->id) }}"
                                                 class="btn btn-danger">Reject</a>
                                         @elseif ($ppat->status_layanan == 2)
-                                            <a href="{{ route('ppat.verifikasi', $ppat->id) }}"
-                                                class="btn btn-primary">Verifikasi</a>
-                                            <a href="{{ route('ppat.reject', $ppat->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('ppat.verifikasi', $ppat->id) }}"
+                                                    class="btn btn-primary">Verifikasi</a>
+                                                <a href="{{ route('ppat.reject', $ppat->id) }}"
+                                                    class="btn btn-danger">Reject</a>
+                                            @endif
+
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
                                                 Tambahan</button> --}}
                                         @elseif ($ppat->status_layanan == 3)
-                                            <a href="{{ route('ppat.finish', $ppat->id) }}"
-                                                class="btn btn-primary">Selesai</a>
-                                            <a href="{{ route('ppat.reject', $ppat->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                <a href="{{ route('ppat.finish', $ppat->id) }}"
+                                                    class="btn btn-primary">Selesai</a>
+                                                <a href="{{ route('ppat.reject', $ppat->id) }}"
+                                                    class="btn btn-danger">Reject</a>
+                                            @endif
+
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
                                                 Tambahan</button> --}}
                                         @endif
