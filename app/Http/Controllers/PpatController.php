@@ -166,7 +166,7 @@ class PpatController extends Controller
 
 
 
-            return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil');
+            return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil ditambahkan');
         } catch (\Throwable $th) {
             // DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
@@ -305,16 +305,18 @@ class PpatController extends Controller
     public function destroy(Ppat $ppat)
     {
         try {
-            $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
-            $files = json_decode($berkas->files);
-            $temp_delete = [];
-            foreach ($files as $file) {
-                if (Storage::exists($file)) {
-                    Storage::delete($file);
-                }
-            }
+            // $berkas = BerkasLayanan::where('ppat_id', $ppat->id)->first();
+            // $files = json_decode($berkas->files);
+            // $temp_delete = [];
+            // foreach ($files as $file) {
+            //     if (Storage::exists($file)) {
+
+            //         Storage::delete($file);
+            //     }
+            // }
+            Storage::delete($ppat->file_ppat);
             $ppat->delete();
-            return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil');
+            return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil dibatalkan / dihapus');
         } catch (\Exception $th) {
 
             return redirect()->back()->with('error', $th->getMessage());

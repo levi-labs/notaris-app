@@ -102,6 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/edit/{ppat}', 'edit')->name('ppat.edit');
         Route::put('/update/{ppat}', 'update')->name('ppat.update');
         Route::delete('/destroy/{ppat}', 'destroy')->name('ppat.destroy');
+        Route::get('/reject/{ppat}', 'destroy')->name('ppat.reject');
     });
 
     Route::controller(NotarisController::class)->prefix('notaris')->group(function () {
@@ -130,6 +131,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/edit/{notaris}', 'edit')->name('notaris.edit');
         Route::put('/update/{notaris}', 'update')->name('notaris.update');
         Route::delete('/destroy/{notaris}', 'destroy')->name('notaris.destroy');
+        Route::get('/reject/{notaris}', 'destroy')->name('notaris.reject');
     });
 
     Route::controller(ArsipPpatController::class)->prefix('arsip-ppat')->group(function () {

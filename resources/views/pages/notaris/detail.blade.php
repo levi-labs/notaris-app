@@ -164,14 +164,15 @@
                                                     class="btn btn-primary">Proses</a>
                                             @endif
 
-                                            <a href="{{ route('notaris.reject', $notaris->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            <a href="{{ route('notaris.reject', $notaris->id) }}" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure?') ? true : false">Reject</a>
                                         @elseif ($notaris->status_layanan == 2)
                                             @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
                                                 <a href="{{ route('notaris.verifikasi', $notaris->id) }}"
                                                     class="btn btn-primary">Verifikasi</a>
                                                 <a href="{{ route('notaris.reject', $notaris->id) }}"
-                                                    class="btn btn-danger">Reject</a>
+                                                    class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?') ? true : false">Reject</a>
                                             @endif
 
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
@@ -181,7 +182,8 @@
                                                 <a href="{{ route('notaris.finish', $notaris->id) }}"
                                                     class="btn btn-primary">Selesai</a>
                                                 <a href="{{ route('notaris.reject', $notaris->id) }}"
-                                                    class="btn btn-danger">Reject</a>
+                                                    class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?') ? true : false">Reject</a>
                                             @endif
 
                                             {{-- <button type="button" class="btn btn-primary" id="verify">Biaya
@@ -257,8 +259,10 @@
                                 <h5 class="my-2">Biaya Tambahan</h5>
                                 @if ($notaris->status_layanan == 2 || $notaris->status_layanan == 3)
                                     <div class="col-md-12 text-right pr-3">
-                                        <button type="button" class="btn btn-icon btn-outline-dark" id="verify"><i
-                                                class="feather icon-plus"></i></button>
+                                        @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                            <button type="button" class="btn btn-icon btn-outline-dark" id="verify"><i
+                                                    class="feather icon-plus"></i></button>
+                                        @endif
                                     </div>
                                 @endif
                                 @if ($biayaTambahan->count() > 0)
@@ -309,15 +313,17 @@
                                                     </td>
                                                 </tr>
                                                 @if ($notaris->status_layanan == 3)
-                                                    <tr>
-                                                        <td colspan="3"></td>
+                                                    @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                        <tr>
+                                                            <td colspan="3"></td>
 
-                                                        <td class="text-right">
-                                                            <a href="{{ route('notaris.pembayaran-tambahan', $notaris->id) }}"
-                                                                class="btn btn-icon btn-outline-success"><i
-                                                                    class="feather icon-check"></i></a>
-                                                        </td>
-                                                    </tr>
+                                                            <td class="text-right">
+                                                                <a href="{{ route('notaris.pembayaran-tambahan', $notaris->id) }}"
+                                                                    class="btn btn-icon btn-outline-success"><i
+                                                                        class="feather icon-check"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
                                                 @endif
                                             </tbody>
                                         </table>

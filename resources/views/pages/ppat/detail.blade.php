@@ -162,10 +162,12 @@
                                             @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
                                                 <a href="{{ route('ppat.confirm', $ppat->id) }}"
                                                     class="btn btn-primary">Proses</a>
+                                                {{-- <a href="{{ route('ppat.reject', $ppat->id) }}" class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure?') ? true : false">Reject</a> --}}
                                             @endif
 
-                                            <a href="{{ route('ppat.reject', $ppat->id) }}"
-                                                class="btn btn-danger">Reject</a>
+                                            <a href="{{ route('ppat.reject', $ppat->id) }}" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure?') ? true : false">Reject</a>
                                         @elseif ($ppat->status_layanan == 2)
                                             @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
                                                 <a href="{{ route('ppat.verifikasi', $ppat->id) }}"
@@ -256,10 +258,12 @@
                                 <hr>
                                 <h5 class="my-2">Biaya Tambahan</h5>
                                 @if ($ppat->status_layanan == 2 || $ppat->status_layanan == 3)
-                                    <div class="col-md-12 text-right pr-3">
-                                        <button type="button" class="btn btn-icon btn-outline-dark" id="verify"><i
-                                                class="feather icon-plus"></i></button>
-                                    </div>
+                                    @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                        <div class="col-md-12 text-right pr-3">
+                                            <button type="button" class="btn btn-icon btn-outline-dark" id="verify"><i
+                                                    class="feather icon-plus"></i></button>
+                                        </div>
+                                    @endif
                                 @endif
                                 @if ($biayaTambahan->count() > 0)
                                     <div class="table-responsive">
@@ -290,17 +294,22 @@
                                                         <td>{{ 'Rp ' . number_format($tambahan->nominal, 0, ',', '.') }}
                                                         </td>
                                                         @if ($ppat->status_layanan == 3)
-                                                            <td>
-                                                                <a
-                                                                    href="{{ route('biaya-tambahan.destroy', $tambahan->id) }}"><i
-                                                                        class="fas fa-trash text-danger"></i></a>
-                                                            </td>
+                                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                                <td>
+                                                                    <a
+                                                                        href="{{ route('biaya-tambahan.destroy', $tambahan->id) }}"><i
+                                                                            class="fas fa-trash text-danger"></i>
+                                                                    </a>
+                                                                </td>
+                                                            @endif
                                                         @else
-                                                            <td>
-                                                                <a href="{{ route('biaya-tambahan.destroy', $tambahan->id) }}"
-                                                                    onclick="return false"><i
-                                                                        class="fas fa-trash text-danger"></i></a>
-                                                            </td>
+                                                            @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                                <td>
+                                                                    <a href="{{ route('biaya-tambahan.destroy', $tambahan->id) }}"
+                                                                        onclick="return false"><i
+                                                                            class="fas fa-trash text-danger"></i></a>
+                                                                </td>
+                                                            @endif
                                                         @endif
 
                                                     </tr>
@@ -311,15 +320,17 @@
                                                     </td>
                                                 </tr>
                                                 @if ($ppat->status_layanan == 3)
-                                                    <tr>
-                                                        <td colspan="3"></td>
+                                                    @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
+                                                        <tr>
+                                                            <td colspan="3"></td>
 
-                                                        <td class="text-right">
-                                                            <a href="{{ route('ppat.pembayaran-tambahan', $ppat->id) }}"
-                                                                class="btn btn-icon btn-outline-success"><i
-                                                                    class="feather icon-check"></i></a>
-                                                        </td>
-                                                    </tr>
+                                                            <td class="text-right">
+                                                                <a href="{{ route('ppat.pembayaran-tambahan', $ppat->id) }}"
+                                                                    class="btn btn-icon btn-outline-success"><i
+                                                                        class="feather icon-check"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
                                                 @endif
                                             </tbody>
                                         </table>

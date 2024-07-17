@@ -11,6 +11,7 @@ use App\Models\Notaris;
 use App\Models\r;
 use App\Models\TransaksiBiayaPermohonanNotaris;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class NotarisController extends Controller
 {
@@ -132,7 +133,7 @@ class NotarisController extends Controller
                 'nama_pihak_kedua' => $request->nama_pihak_kedua,
                 'alamat_asset_termohon' => $request->alamat_asset_termohon,
             ]);
-            return redirect()->route('notaris.index')->with('success', 'Pengajuan Berhasil');
+            return redirect()->route('notaris.index')->with('success', 'Pengajuan Berhasil ditambahkan');
         } catch (\Exception $th) {
             return back()->with('error', $th->getMessage());
         }
@@ -180,7 +181,15 @@ class NotarisController extends Controller
      */
     public function destroy(Notaris $notaris)
     {
-        //
+        try {
+            Storage::delete($notaris->file_notaris);
+            $notaris->delete();
+
+            return redirect()->route('notaris.index')->with('success', 'Pengajuan Berhasil dibatalkan / dihapus');
+        } catch (\Throwable $th) {
+
+            return back()->with('error', $th->getMessage());
+        }
     }
 
 
