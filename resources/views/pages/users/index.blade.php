@@ -53,8 +53,14 @@
                                                     class="btn btn-info">Reset Password</a></a>
                                                 <a href="{{ route('user.edit', $item->id) }}"
                                                     class="btn btn-warning">Edit</a>
-                                                <a href="{{ route('user.destroy', $item->id) }}" class="btn btn-danger">
-                                                    Hapus</a>
+                                                <form action="{{ route('user.destroy', $item->id) }}" method="POST"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                </form>
+                                                {{-- <a href="{{ route('user.destroy', $item->id) }}" class="btn btn-danger">
+                                                    Hapus</a> --}}
                                             </td>
                                         </tr>
                                     @endforeach
