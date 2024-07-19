@@ -30,7 +30,7 @@
                                 {{ session()->get('error') }}
                             </div>
                         @endif
-                        <a href="{{ route('arsip-ppat.create') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
+                        <a href="{{ route('arsip-ppat.create') }}" class="btn btn-primary mt-4">Tambah Arsip</a>
                         {{-- <div class="alert alert-info my-2">
                             <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan dapat dibatalkan jika belom
                             dikonfirmasi, jika sudah dikonfirmasi, pengajuan dapat dibatalkan dengan menghubungi

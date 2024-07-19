@@ -47,8 +47,8 @@ class DashboardController extends Controller
                 'total_notaris'
             ));
         } elseif (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master') {
-            $daftar_ppat = Ppat::latest()->take(10)->get();
-            $daftar_notaris = Notaris::latest()->take(10)->get();
+            $daftar_ppat = Ppat::orderBy('id', 'desc')->take(10)->get();
+            $daftar_notaris = Notaris::orderBy('id', 'desc')->take(10)->get();
             $total_ppat = DB::table('ppat')->count();
             $total_notaris = DB::table('notaris')->count();
             $data_1 = DB::table('ppat')->where('status_layanan', '1')->count();

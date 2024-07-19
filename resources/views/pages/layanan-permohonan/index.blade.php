@@ -19,7 +19,7 @@
                             </div>
                         @endif
 
-                        <a href="{{ route('layanan.create') }}" class="btn btn-primary mt-4">Buat Pengajuan</a>
+                        <a href="{{ route('layanan.create') }}" class="btn btn-primary mt-4">Buat Layanan Permohonan</a>
                     </div>
                     <div class="card-body table-border-style">
                         <div class="table-responsive">
