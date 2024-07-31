@@ -19,7 +19,7 @@
                             </div>
                         @endif
 
-                        <a href="{{ route('permohonan.create') }}" class="btn btn-primary mt-4">Buat Jenis Permohonan</a>
+                        <a href="{{ route('permohonan.create') }}" class="btn btn-primary mt-4">Tambah</a>
                     </div>
                     <div class="card-body table-border-style">
                         <div class="table-responsive">
@@ -48,8 +48,13 @@
                                             <td>
                                                 <a href="{{ route('permohonan.edit', $item->id) }}"
                                                     class="btn btn-primary">Edit</a>
-                                                <a href="{{ route('permohonan.destroy', $item->id) }}"
-                                                    class="btn btn-danger"> Hapus</a>
+                                                <form class="d-inline" method="POST"
+                                                    action="{{ route('permohonan.destroy', $item->id) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger">Hapus</button>
+                                                </form>
+
                                             </td>
                                         </tr>
                                     @endforeach

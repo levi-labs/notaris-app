@@ -99,9 +99,9 @@ class LayananPermohonanController extends Controller
         try {
             $layananPermohonan->delete();
 
-            return redirect()->route('layanan-permohonan.index')->with('success', 'Layanan Permohonan deleted successfully.');
+            return back()->with('success', 'Layanan Permohonan deleted successfully.');
         } catch (\Throwable $th) {
-            return redirect()->route('layanan-permohonan.index')->with('error', 'Layanan Permohonan can not be deleted.');
+            return back()->with('error', 'Layanan Permohonan can not be deleted.');
         }
     }
 }

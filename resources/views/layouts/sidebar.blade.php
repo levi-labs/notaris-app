@@ -14,8 +14,8 @@
         </li>
         <li class="nav-item">
             <a href="{{ route('layanan.index') }}" class="nav-link "><span class="pcoded-micon"><i
-                        class="feather icon-file-text"></i></span><span class="pcoded-mtext">Layanan
-                    Permohonan</span></a>
+                        class="feather icon-file-text"></i></span><span class="pcoded-mtext">Nama Layanan
+                </span></a>
         </li>
     @endif
 
@@ -23,7 +23,7 @@
         <li class="nav-item">
             <a href="{{ route('biaya.index') }}" class="nav-link "><span class="pcoded-micon"><i
                         class="feather icon-pie-chart   "></i></span><span class="pcoded-mtext">Biaya
-                    Permohonan</span></a>
+                    Layanan</span></a>
         </li>
     @endif
 

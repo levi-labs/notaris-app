@@ -15,7 +15,7 @@ class BiayaPermohonanController extends Controller
      */
     public function index()
     {
-        $title = 'Biaya Permohonan';
+        $title = 'Biaya Layanan';
 
         $layanan = LayananPermohonan::all();
 
