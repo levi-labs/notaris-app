@@ -66,7 +66,7 @@
 
         .table-print {
             margin: auto;
-            width: 90%;
+            width: 60%;
 
             padding: 1px;
         }

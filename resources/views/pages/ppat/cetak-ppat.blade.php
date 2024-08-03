@@ -1,23 +1,34 @@
 @extends('pages.report-layout.main')
 @section('surat')
     <style>
+        .wrap {
+            display: flex;
+            justify-content: center;
+            padding-right: 2%;
+            padding-left: 2%;
+        }
+
         .container {
-            margin-left: 5%;
-            margin-right: 5%;
+
             margin-bottom: 10px;
             padding: 20px;
             border: 2px solid black;
+            width: 60%;
         }
     </style>
 
-    <div class="container">
-        <button type="button" onclick="window.print()" class="btn">&nbsp;Print</button>
-        <h4>Nama Layanan :{{ $ppat->layanan->nama }} | {{ $ppat->nomor_pengajuan }}
-            |{{ $ppat->layanan->jenisPermohonan->nama }}</h4>
-        <p>Pihak Pertama : {{ $ppat->nama_pihak_pertama }}</p>
-        <p>Pihak Kedua : {{ $ppat->nama_pihak_kedua }}</p>
-        <p>Alamat Asset : {{ $ppat->alamat_asset_termohon }}</p>
+    <div class="wrap">
+        <div class="container">
+            <button type="button" onclick="window.print()" class="btn">&nbsp;Print</button>
+            <h4>Nama Layanan :{{ $ppat->layanan->nama }} | {{ $ppat->nomor_pengajuan }}
+                |{{ $ppat->layanan->jenisPermohonan->nama }}</h4>
+            <p>Pihak Pertama : {{ $ppat->nama_pihak_pertama }}</p>
+            <p>Pihak Kedua : {{ $ppat->nama_pihak_kedua }}</p>
+            <p>Alamat Asset : {{ $ppat->alamat_asset_termohon }}</p>
+        </div>
+
     </div>
+
 
 
     <div class="table-print">
@@ -27,7 +38,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Nama Berkas</th>
+                    <th>Nama Biaya</th>
                     <th>Nominal</th>
                 </tr>
             </thead>
@@ -41,7 +52,7 @@
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->layanan->nama }}</td>
+                        <td>{{ $item->nama_biaya }}</td>
                         <td>{{ 'Rp ' . number_format($item->harga, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
@@ -59,7 +70,7 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Nama Berkas</th>
+                    <th>Nama Biaya</th>
                     <th>Nominal</th>
                 </tr>
             </thead>
