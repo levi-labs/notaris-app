@@ -204,13 +204,14 @@
                                 @endphp
                                 @if ($ppat->status_layanan == 2)
                                     @if ($transaksi == null)
-                                        <a href="{{ route('ppat.pembayaran', $ppat->id) }}"
-                                            class="btn btn-primary float-right">Bayar</a>
+                                        <button class="btn btn-primary float-right" id="pay-button">Bayar</button>
+                                        {{-- <a href="{{ route('ppat.pembayaran', $ppat->id) }}"
+                                            class="btn btn-primary float-right" id="pay-button">Bayar</a> --}}
                                     @elseif ($transaksi->count() > 0 && $transaksi->status == 'lunas')
                                         <button class="btn btn-primary float-right disabled">Sudah Lunas</button>
                                     @elseif ($transaksi->count() > 0 && $transaksi->status == 'belum lunas')
                                         <a href="{{ route('ppat.pembayaran', $ppat->id) }}"
-                                            class="btn btn-primary float-right">Bayar</a>
+                                            class="btn btn-primary float-right" id="pay-button">Bayar</a>
                                     @endif
                                 @endif
 
@@ -372,7 +373,37 @@
             </div>
         </div>
     </div>
+    <div id="snap-container"></div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        // For example trigger on button clicked, or any time you need
+        var payButton = document.getElementById('pay-button');
+        payButton.addEventListener('click', function() {
+            // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+            window.snap.pay('{{ $snapToken }}', {
+                onSuccess: function(result) {
+                    /* You may add your own implementation here */
+                    alert("payment success!");
+                    console.log(result);
+                },
+                onPending: function(result) {
+                    /* You may add your own implementation here */
+                    alert("wating your payment!");
+                    console.log(result);
+                },
+                onError: function(result) {
+                    /* You may add your own implementation here */
+                    alert("payment failed!");
+                    console.log(result);
+                },
+                onClose: function() {
+                    /* You may add your own implementation here */
+                    alert('you closed the popup without finishing the payment');
+                }
+            })
+        });
+    </script>
     @include('pages.ppat.biaya-tambahan')
 @endsection

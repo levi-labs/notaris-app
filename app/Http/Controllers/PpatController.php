@@ -228,13 +228,15 @@ class PpatController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
+        $snapToken = $this->checkoutPembayaranLayanan($ppat->id);
 
 
         return view('pages.ppat.detail', compact(
             'title',
             'ppat',
             'biayalayanan',
-            'biayaTambahan'
+            'biayaTambahan',
+            'snapToken'
         ));
     }
 
@@ -339,16 +341,14 @@ class PpatController extends Controller
             $exist = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
 
             if ($exist != null) {
-
                 $exist->update([
-                    'status' => 'Lunas'
+                    'status' => 'Pending'
                 ]);
                 return redirect()->back()->with('success', 'Pembayaran PPAT Berhasil');
             } else {
-
                 $transaksi->ppat_id = $ppat->id;
                 $transaksi->layanan_permohonan_id = $ppat->layanan_permohonan_id;
-                $transaksi->status = 'Lunas';
+                $transaksi->status = 'Pending';
                 $transaksi->save();
 
                 return redirect()->back()->with('success', 'Pembayaran PPAT Berhasil');
@@ -357,6 +357,28 @@ class PpatController extends Controller
 
             return redirect()->back()->with('error', $th->getMessage());
         }
+    }
+    public function checkoutPembayaranLayanan($id)
+    {
+        $x = \Midtrans\Config::$serverKey = 'SB-Mid-server-s8YDC90Dv8FhWf2f2aFkaDl1';
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = false;
+        // dd($x);
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand(),
+                'gross_amount' => 10000,
+            ),
+            'customer_details' => array(
+                'first_name' => 'budi',
+                'last_name' => 'pratama',
+                'email' => 'budi.pra@example.com',
+                'phone' => '08111222333',
+            ),
+        );
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        return $snapToken;
     }
 
     public function pembayaranTambahan(Ppat $ppat)
