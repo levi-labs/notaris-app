@@ -1,5 +1,10 @@
 @extends('layouts.master')
-
+@push('midtrans')
+    @once
+        <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key=config('midtrans.clientKey')></script>
+    @endonce
+@endpush
 @section('content')
     <style>
         .more-text {

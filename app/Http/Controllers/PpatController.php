@@ -360,11 +360,11 @@ class PpatController extends Controller
     }
     public function checkoutPembayaranLayanan($id)
     {
-        $x = \Midtrans\Config::$serverKey = 'SB-Mid-server-s8YDC90Dv8FhWf2f2aFkaDl1';
-        \Midtrans\Config::$isProduction = false;
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = false;
-        // dd($x);
+        \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+        \Midtrans\Config::$isProduction = config('midtrans.isProduction');
+        \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is3ds');
+
         $params = array(
             'transaction_details' => array(
                 'order_id' => rand(),
