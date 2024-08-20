@@ -225,6 +225,8 @@ class PpatController extends Controller
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
         $check_ppat = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
         $check_ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
+        $nominal = null;
+        $nominal_tambahan = null;
         if ($check_ppat->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
