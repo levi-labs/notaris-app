@@ -135,6 +135,7 @@ class PpatController extends Controller
             'file_ppat' => 'required|mimes:pdf|max:10000',
         ]);
 
+        DB::beginTransaction();
         try {
             $file = $request->file('file_ppat');
 
@@ -153,23 +154,15 @@ class PpatController extends Controller
             $data->file_ppat = $path;
             $data->save();
 
-            // $temp_files = $this->handleUpload($request);
-            // $berkas_layanan = new BerkasLayanan();
-
-            // $berkas_layanan->ppat_id = $data->id;
-            // $berkas_layanan->user_id = auth()->user()->id;
-
-            // $berkas_layanan->files = json_encode($temp_files);
-
-            // $berkas_layanan->save();
-
-            // DB::commit();
-
-
-
+            $transaksi = new TransaksiBiayaPermohonan();
+            $transaksi->ppat_id = $data->id;
+            $transaksi->layanan_permohonan_id = $request->layanan_permohonan_id;
+            $transaksi->status = 'Pending';
+            $transaksi->save();
+            DB::commit();
             return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil ditambahkan');
         } catch (\Throwable $th) {
-            // DB::rollBack();
+            DB::rollBack();
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
@@ -348,7 +341,7 @@ class PpatController extends Controller
 
             if ($exist != null) {
                 $exist->update([
-                    'status' => 'Pending'
+                    'status' => 'Lunas'
                 ]);
                 return redirect()->back()->with('success', 'Pembayaran PPAT Berhasil');
             } else {
