@@ -390,7 +390,14 @@ class PpatController extends Controller
 
     public function callbackCheckOut(Request $request)
     {
-        dd($request->all());
+        $serverKey =  \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+        if ($request->signature_key == $hashed) {
+            if ($request->transaction_status == 'settlement') {
+                dd($request->all);
+            }
+        }
     }
 
     public function pembayaranTambahan(Ppat $ppat)
