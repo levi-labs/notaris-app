@@ -493,7 +493,12 @@ class PpatController extends Controller
                 return redirect()->route('ppat.index3')->with('success', 'Pengajuan PPAT di verifikasi');
             }
 
-            return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas (Biaya Tambahan Belum dimasukkan)');
+            if ($biayaTambahan->count() == 0) {
+                return redirect()->back()->with('error', 'Biaya Tambahan Belum dimasukkan');
+            }
+
+
+            return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas ');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
