@@ -88,7 +88,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/verifikasi/{ppat}', 'verifikasi')->name('ppat.verifikasi');
         Route::get('/finish/{ppat}', 'finish')->name('ppat.finish');
 
-        Route::get('/pembayaran/{ppat}', 'checkoutPembayaranLayanan')->name('ppat.pembayaran');
+        Route::get('/pembayaran/{ppat}', 'pembayaranLayanan')->name('ppat.pembayaran');
 
         Route::get('/pembayaran-tambahan/{ppat}', 'pembayaranTambahan')->name('ppat.pembayaran-tambahan');
 
