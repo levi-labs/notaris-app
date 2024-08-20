@@ -9,6 +9,7 @@ use App\Models\BiayaTambahanPpat;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
 use App\Models\TransaksiBiayaPermohonan;
+use App\Models\TransaksiBiayaPermohonanNotaris;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -365,7 +366,7 @@ class PpatController extends Controller
         $user = User::where('id', $id)->first();
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand() . '-' . $ppat_id,
+                'order_id' => rand() . '-' . $ppat_id . '-' . 'PPAT',
                 'gross_amount' => $nominal,
             ),
             'customer_details' => array(
@@ -386,13 +387,24 @@ class PpatController extends Controller
         try {
             if ($request->signature_key == $hashed) {
                 if ($request->transaction_status == 'settlement') {
-                    $ppat_id = explode('-', $request->order_id)[1];
-                    $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat_id)->first();
-                    $transaksi->update([
-                        'status' => 'lunas'
-                    ]);
+                    $check_type = explode('-', $request->order_id);
+                    $id = $check_type[1];
+                    $is_type = $check_type[2];
+                    if ($is_type == 'PPAT') {
+                        $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $id)->first();
+                        $transaksi->update([
+                            'status' => 'lunas'
+                        ]);
 
-                    return redirect()->back()->with('success', 'Pembayaran Berhasil' . $request->input('va_number.0.bank'));
+                        return redirect()->back()->with('success', 'Pembayaran Berhasil');
+                    } elseif ($is_type == 'NOTARIS') {
+                        $transaksi = TransaksiBiayaPermohonanNotaris::where('notaris_id', $id)->first();
+                        $transaksi->update([
+                            'status' => 'lunas'
+                        ]);
+
+                        return redirect()->back()->with('success', 'Pembayaran Berhasil');
+                    }
                 } else {
                     return redirect()->back()->with('error', 'Pembayaran Gagal');
                 }

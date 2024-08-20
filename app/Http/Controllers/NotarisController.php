@@ -10,6 +10,7 @@ use App\Models\LayananPermohonan;
 use App\Models\Notaris;
 use App\Models\r;
 use App\Models\TransaksiBiayaPermohonanNotaris;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -150,15 +151,44 @@ class NotarisController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $notaris->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
 
+        $nominal = $biayalayanan->sum('harga');
 
+
+        $snapToken = $this->checkoutPembayaranLayanan($notaris->user_id, $nominal, $notaris->id);
 
         return view('pages.notaris.detail', compact(
             'title',
             'notaris',
             'biayalayanan',
-            'biayaTambahan'
+            'biayaTambahan',
+            'snapToken',
         ));
     }
+    public function checkoutPembayaranLayanan($id, $nominal, $notaris_id)
+    {
+        \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+        \Midtrans\Config::$isProduction = config('midtrans.isProduction');
+        \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
+        \Midtrans\Config::$is3ds = config('midtrans.is3ds');
+
+        $user = User::where('id', $id)->first();
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => rand() . '-' . $notaris_id . '-' . 'NOTARIS',
+                'gross_amount' => $nominal,
+                ''
+            ),
+            'customer_details' => array(
+                'first_name' => $user->nama,
+                'email' => $user->email,
+            ),
+
+            'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
+        );
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        return $snapToken;
+    }
+
 
     /**
      * Show the form for editing the specified resource.
