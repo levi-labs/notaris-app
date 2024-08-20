@@ -385,18 +385,20 @@ class PpatController extends Controller
     {
         $serverKey =  \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-
-        if ($request->signature_key == $hashed) {
-            if ($request->transaction_status == 'settlement') {
-                $ppat_id = explode('-', $request->order_id)[1];
-                $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat_id)->first();
-                $transaksi->update([
-                    'status' => 'lunas'
-                ]);
-            } else {
-
-                return redirect()->back()->with('error', 'Pembayaran Gagal');
+        try {
+            if ($request->signature_key == $hashed) {
+                if ($request->transaction_status == 'settlement') {
+                    $ppat_id = explode('-', $request->order_id)[1];
+                    $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat_id)->first();
+                    $transaksi->update([
+                        'status' => 'lunas'
+                    ]);
+                } else {
+                    return redirect()->back()->with('error', 'Pembayaran Gagal');
+                }
             }
+        } catch (\Exception $th) {
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
