@@ -157,7 +157,7 @@ class PpatController extends Controller
             $transaksi = new TransaksiBiayaPermohonan();
             $transaksi->ppat_id = $data->id;
             $transaksi->layanan_permohonan_id = $request->layanan_permohonan_id;
-            $transaksi->status = 'Pending';
+            $transaksi->status = 'belum lunas';
             $transaksi->save();
             DB::commit();
             return redirect()->route('ppat.index')->with('success', 'Pengajuan PPAT Berhasil ditambahkan');
