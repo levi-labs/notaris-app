@@ -333,8 +333,7 @@
 
                                                             <td class="text-right">
                                                                 <button id="pay-tambahan"
-                                                                    class="btn btn-icon btn-outline-success"><i
-                                                                        class="feather icon-check"></i></button>
+                                                                    class="btn btn-icon btn-outline-success">Bayar</button>
                                                                 {{-- <a href="{{ route('ppat.pembayaran-tambahan', $ppat->id) }}"
                                                                     class="btn btn-icon btn-outline-success"><i
                                                                         class="feather icon-check"></i></a> --}}
