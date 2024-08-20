@@ -332,8 +332,9 @@
                                                             <td colspan="3"></td>
 
                                                             <td class="text-right">
-                                                                <button id="pay-button"
-                                                                    class="btn btn-icon btn-outline-success">Bayar</button>
+                                                                <button id="pay-buttons"
+                                                                    class="btn btn-icon btn-outline-success"><i
+                                                                        class="feather icon-check"></i></button>
                                                                 {{-- <a href="{{ route('ppat.pembayaran-tambahan', $ppat->id) }}"
                                                                     class="btn btn-icon btn-outline-success"><i
                                                                         class="feather icon-check"></i></a> --}}
@@ -388,7 +389,7 @@
     <script type="text/javascript">
         // For example trigger on button clicked, or any time you need
         var payButton = document.getElementById('pay-button');
-        var payTambahan = document.getElementById('pay-tambahan');
+        var payButtons = document.getElementById('pay-buttons');
         payButton.addEventListener('click', function() {
             // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
             window.snap.pay('{{ $snapToken }}', {
@@ -413,7 +414,7 @@
                 }
             })
         });
-        payTambahan.addEventListener('click', function() {
+        payButtons.addEventListener('click', function() {
             // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
             alert("payment success!");
         });
