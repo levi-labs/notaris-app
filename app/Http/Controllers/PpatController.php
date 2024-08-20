@@ -224,13 +224,17 @@ class PpatController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
         $check_ppat = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
-        $check_ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
+        $check_ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
         if ($check_ppat->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
-        if ($check_ppat_tambahan->status == 'belum lunas') {
-            $nominal_tambahan = $biayaTambahan->sum('nominal');
+        if ($check_ppat_tambahan->count() > 0) {
+            $ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
+            if ($ppat_tambahan->status == 'belum lunas') {
+                $nominal_tambahan = $biayaTambahan->sum('nominal');
+            }
         }
+
 
 
         $snapToken = $this->checkoutPembayaranLayanan(
