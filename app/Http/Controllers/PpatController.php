@@ -384,13 +384,14 @@ class PpatController extends Controller
         \Midtrans\Config::$isProduction = config('midtrans.isProduction');
         \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
-
+        $ppat_status = Ppat::where('id', $ppat_id)->first();
         $user = User::where('id', $id)->first();
         $type = $nominal !== null ? 'PPAT' : 'PPAT TAMBAHAN';
         $amount = 0;
-        if ($nominal !== null) {
+
+        if ($nominal !== null && $ppat_status->status_layanan == 2) {
             $amount = $nominal;
-        } else {
+        } elseif ($nominal_tambahan !== null && $ppat_status->status_layanan == 3) {
             $amount = $nominal_tambahan;
         }
 
