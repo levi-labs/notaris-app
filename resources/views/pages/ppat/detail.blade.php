@@ -332,7 +332,7 @@
                                                             <td colspan="3"></td>
 
                                                             <td class="text-right">
-                                                                <button id="pay-buttons"
+                                                                <button id="pay-button"
                                                                     class="btn btn-icon btn-outline-success"><i
                                                                         class="feather icon-check"></i></button>
                                                                 {{-- <a href="{{ route('ppat.pembayaran-tambahan', $ppat->id) }}"
