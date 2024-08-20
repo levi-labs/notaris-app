@@ -190,3 +190,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::patch('/update-password/{user}', 'updatePassword')->name('user.update-password');
     });
 });
+
+Route::post('/checkout-ppat', [PpatController::class, 'callbackCheckOut'])->name('ppat.checkout');

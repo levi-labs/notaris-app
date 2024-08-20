@@ -231,9 +231,11 @@ class PpatController extends Controller
 
         $nominal = $biayalayanan->sum('harga');
 
-
-        $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal);
-
+        if ($biayalayanan->count() > 0) {
+            $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal);
+        } else {
+            $snapToken = 10000;
+        }
 
         return view('pages.ppat.detail', compact(
             'title',
@@ -384,6 +386,11 @@ class PpatController extends Controller
         );
         $snapToken = \Midtrans\Snap::getSnapToken($params);
         return $snapToken;
+    }
+
+    public function callbackCheckOut(Request $request)
+    {
+        dd($request->all());
     }
 
     public function pembayaranTambahan(Ppat $ppat)
