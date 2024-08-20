@@ -223,11 +223,12 @@ class PpatController extends Controller
         // $lampiran = json_decode($berkas->files);
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
-
-        if ($biayalayanan->status == 'belum lunas') {
+        $check_ppat = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
+        $check_ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
+        if ($check_ppat->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
-        if ($biayaTambahan->status == 'belum lunas') {
+        if ($check_ppat_tambahan->status == 'belum lunas') {
             $nominal_tambahan = $biayaTambahan->sum('nominal');
         }
 

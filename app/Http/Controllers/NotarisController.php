@@ -161,11 +161,12 @@ class NotarisController extends Controller
 
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $notaris->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
-
-        if ($biayalayanan->status == 'belum lunas') {
+        $checktransaksilayanan_notaris = TransaksiBiayaPermohonanNotaris::where('notaris_id', $notaris->id)->first();
+        $checkBiayaTambahan_notaris = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->first();
+        if ($checktransaksilayanan_notaris->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
-        if ($biayaTambahan->status == 'belum lunas') {
+        if ($checkBiayaTambahan_notaris->status == 'belum lunas') {
             $nominal_tambahan = $biayaTambahan->sum('nominal');
         }
 
