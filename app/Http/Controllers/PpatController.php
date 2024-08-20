@@ -230,12 +230,16 @@ class PpatController extends Controller
         if ($check_ppat->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
-        if ($check_ppat_tambahan->count() > 0) {
-            $ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
-            if ($ppat_tambahan->status == 'belum lunas') {
-                $nominal_tambahan = $biayaTambahan->sum('nominal');
+        if ($ppat->status_layanan == '3') {
+            if ($check_ppat_tambahan->count() > 0) {
+                $ppat_tambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->first();
+                if ($ppat_tambahan->status == 'belum lunas') {
+
+                    $nominal_tambahan = $biayaTambahan->sum('nominal');
+                }
             }
         }
+
 
 
 
@@ -388,10 +392,17 @@ class PpatController extends Controller
 
         $user = User::where('id', $id)->first();
         $type = $nominal !== null ? 'PPAT' : 'PPAT TAMBAHAN';
+        $amount = 0;
+        if ($nominal !== null) {
+            $amount = $nominal;
+        } else {
+            $amount = $nominal_tambahan;
+        }
+
         $params = array(
             'transaction_details' => array(
                 'order_id' => rand() . '-' . $ppat_id . '-' . $type,
-                'gross_amount' => $nominal !== null ? $nominal : $nominal_tambahan,
+                'gross_amount' => $amount,
             ),
             'customer_details' => array(
                 'first_name' => $user->nama,
