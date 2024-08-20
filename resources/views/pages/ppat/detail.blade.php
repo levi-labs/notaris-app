@@ -215,8 +215,9 @@
                                     @elseif ($transaksi->count() > 0 && $transaksi->status == 'lunas')
                                         <button class="btn btn-primary float-right disabled">Sudah Lunas</button>
                                     @elseif ($transaksi->count() > 0 && $transaksi->status == 'belum lunas')
-                                        <a href="{{ route('ppat.pembayaran', $ppat->id) }}"
-                                            class="btn btn-primary float-right" id="pay-button">Bayar</a>
+                                        {{-- <a href="{{ route('ppat.pembayaran', $ppat->id) }}"
+                                            class="btn btn-primary float-right" id="pay-button">Bayar</a> --}}
+                                        <button class="btn btn-primary float-right" id="pay-button">Bayar</button>
                                     @endif
                                 @endif
 
