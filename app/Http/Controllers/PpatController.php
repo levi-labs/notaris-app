@@ -9,6 +9,7 @@ use App\Models\BiayaTambahanPpat;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
 use App\Models\TransaksiBiayaPermohonan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -228,7 +229,10 @@ class PpatController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
-        $snapToken = $this->checkoutPembayaranLayanan($ppat->id);
+        $nominal = $biayalayanan->sum('harga');
+
+
+        $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal);
 
 
         return view('pages.ppat.detail', compact(
@@ -358,24 +362,25 @@ class PpatController extends Controller
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    public function checkoutPembayaranLayanan($id)
+    public function checkoutPembayaranLayanan($id, $nominal)
     {
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('midtrans.isProduction');
         \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
 
+        $user = User::where('id', $id)->first();
         $params = array(
             'transaction_details' => array(
                 'order_id' => rand(),
-                'gross_amount' => 10000,
+                'gross_amount' => $nominal,
             ),
             'customer_details' => array(
-                'first_name' => 'budi',
-                'last_name' => 'pratama',
-                'email' => 'budi.pra@example.com',
-                'phone' => '08111222333',
+                'first_name' => $user->nama,
+                'email' => $user->email,
             ),
+
+            'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
         );
         $snapToken = \Midtrans\Snap::getSnapToken($params);
         return $snapToken;

@@ -23,7 +23,7 @@ class BiayaPermohonanController extends Controller
             ->join('layanan_permohonan', 'biaya_layanan.layanan_permohonan_id', '=', 'layanan_permohonan.id')
             ->join('jenis_permohonan', 'layanan_permohonan.jenis_permohonan_id', '=', 'jenis_permohonan.id')
             ->select('biaya_layanan.layanan_permohonan_id', 'layanan_permohonan.nama', 'layanan_permohonan.id', 'jenis_permohonan.nama as nama_jenis')
-            ->groupBy('layanan_permohonan.id', 'layanan_permohonan.nama',  'nama_jenis')
+            ->groupBy('layanan_permohonan.id', 'layanan_permohonan.nama', 'layanan_permohonan_id', 'nama_jenis')
             ->get();
         return view('pages.biaya-layanan.index', compact('title', 'data', 'layanan'));
     }
