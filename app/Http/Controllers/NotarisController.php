@@ -12,6 +12,7 @@ use App\Models\r;
 use App\Models\TransaksiBiayaPermohonanNotaris;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class NotarisController extends Controller
@@ -114,7 +115,7 @@ class NotarisController extends Controller
             'alamat_asset_termohon' => 'required',
             'file_notaris' => 'required|mimes:pdf|max:10000',
         ]);
-
+        DB::beginTransaction();
         try {
 
 
@@ -124,18 +125,28 @@ class NotarisController extends Controller
             $nomor  = new Notaris();
             $path = $file->store('public/' . $namauser);
 
-            $notaris = Notaris::create([
-                'nomor_pengajuan' => $nomor->getKodePengajuanNotaris(),
-                'layanan_permohonan_id' => $request->layanan_permohonan_id,
-                'user_id' => auth()->user()->id,
-                'status_layanan' => 1,
-                'file_notaris' => $path,
-                'nama_pihak_pertama' => $request->nama_pihak_pertama,
-                'nama_pihak_kedua' => $request->nama_pihak_kedua,
-                'alamat_asset_termohon' => $request->alamat_asset_termohon,
-            ]);
+            $notaris = new Notaris();
+            $notaris->nomor_pengajuan = $nomor->getKodePengajuanNotaris();
+            $notaris->layanan_permohonan_id = $request->layanan_permohonan_id;
+            $notaris->user_id = auth()->user()->id;
+            $notaris->status_layanan = 1;
+            $notaris->file_notaris = $path;
+            $notaris->nama_pihak_pertama = $request->nama_pihak_pertama;
+            $notaris->nama_pihak_kedua = $request->nama_pihak_kedua;
+            $notaris->alamat_asset_termohon = $request->alamat_asset_termohon;
+            $notaris->save();
+
+            $transaksi = new TransaksiBiayaPermohonanNotaris();
+            $transaksi->notaris_id = $notaris->id;
+            $transaksi->layanan_permohonan_id = $request->layanan_permohonan_id;
+            $transaksi->status = 'belum lunas';
+            $transaksi->save();
+            DB::commit();
+
+
             return redirect()->route('notaris.index')->with('success', 'Pengajuan Berhasil ditambahkan');
         } catch (\Exception $th) {
+            DB::rollBack();
             return back()->with('error', $th->getMessage());
         }
     }
