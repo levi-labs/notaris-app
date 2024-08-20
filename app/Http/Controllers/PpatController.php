@@ -391,6 +391,8 @@ class PpatController extends Controller
                     $transaksi->update([
                         'status' => 'lunas'
                     ]);
+
+                    return redirect()->back()->with('success', 'Pembayaran Berhasil' . $request->input('va_number.0.bank'));
                 } else {
                     return redirect()->back()->with('error', 'Pembayaran Gagal');
                 }
