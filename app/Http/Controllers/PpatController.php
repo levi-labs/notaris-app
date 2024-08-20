@@ -485,14 +485,15 @@ class PpatController extends Controller
     public function verifikasi(Ppat $ppat)
     {
         try {
-            $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->exists();
-            if ($transaksi) {
+            $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat->id)->first();
+            $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
+            if ($transaksi->status == 'lunas' && count($biayaTambahan) > 0) {
                 $ppat->status_layanan = 3;
                 $ppat->save();
                 return redirect()->route('ppat.index3')->with('success', 'Pengajuan PPAT di verifikasi');
             }
 
-            return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas');
+            return redirect()->back()->with('error', 'Pembayaran PPAT Belum Lunas (Biaya Tambahan Belum dimasukkan)');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
