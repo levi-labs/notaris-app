@@ -163,20 +163,19 @@ class NotarisController extends Controller
         $biayaTambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
         $checktransaksilayanan_notaris = TransaksiBiayaPermohonanNotaris::where('notaris_id', $notaris->id)->first();
         $checkBiayaTambahan_notaris = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
-        $nominal = null;
-        $nominal_tambahan = null;
-        if ($checktransaksilayanan_notaris->status == 'belum lunas') {
-            $nominal = $biayalayanan->sum('harga');
-        }
 
-        if ($checkBiayaTambahan_notaris->count() > 0) {
-            $notaris_tambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->first();
-            if ($checkBiayaTambahan_notaris->status == 'belum lunas') {
-                $nominal_tambahan = $biayaTambahan->sum('nominal');
+        $nominal_tambahan = null;
+
+        $nominal = $biayalayanan->sum('harga');
+
+        if ($notaris->status_layanan == '3') {
+            if ($checkBiayaTambahan_notaris->count() > 0) {
+                $notaris_tambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->first();
+                if ($checkBiayaTambahan_notaris->status == 'belum lunas') {
+                    $nominal_tambahan = $biayaTambahan->sum('nominal');
+                }
             }
         }
-
-
 
         $snapToken = $this->checkoutPembayaranLayanan(
             $notaris->user_id,
@@ -200,12 +199,22 @@ class NotarisController extends Controller
         \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
 
-        $type = $nominal !== null ? 'NOTARIS' : 'NOTARIS TAMBAHAN';
+        $notaris_status = Notaris::where('id', $notaris_id)->first();
+        $type = null;
         $user = User::where('id', $id)->first();
+        $amount = 0;
+
+        if ($nominal !== null && $notaris_status->status_layanan == 1 || $notaris_status->status_layanan == 2) {
+            $amount = $nominal;
+            $type = 'NOTARIS';
+        } elseif ($biayaTambahan !== null && $notaris_status->status_layanan == 3) {
+            $amount = $biayaTambahan;
+            $type = 'TAMBAHAN NOTARIS';
+        }
         $params = array(
             'transaction_details' => array(
                 'order_id' => rand() . '-' . $notaris_id . '-' . $type,
-                'gross_amount' => $nominal !== null ? $nominal : $biayaTambahan,
+                'gross_amount' => $amount,
             ),
             'customer_details' => array(
                 'first_name' => $user->nama,
@@ -308,11 +317,15 @@ class NotarisController extends Controller
     public function verifikasi(Notaris $notaris)
     {
         try {
-            $transaksi = TransaksiBiayaPermohonanNotaris::where('notaris_id', $notaris->id)->exists();
-            if ($transaksi) {
+            $transaksi = TransaksiBiayaPermohonanNotaris::where('notaris_id', $notaris->id)->first();
+            $biayaTambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
+            if ($transaksi->status == 'lunas' && count($biayaTambahan) > 0) {
                 $notaris->status_layanan = 3;
                 $notaris->save();
                 return redirect()->route('notaris.index3')->with('success', 'Pengajuan Notaris di verifikasi');
+            }
+            if ($biayaTambahan->count() == 0) {
+                return redirect()->back()->with('error', 'Biaya Tambahan Belum dimasukkan');
             }
 
             return redirect()->back()->with('error', 'Pembayaran Notaris Belum Lunas');

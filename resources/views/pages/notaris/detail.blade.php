@@ -325,9 +325,12 @@
                                                             <td colspan="3"></td>
 
                                                             <td class="text-right">
-                                                                <a href="{{ route('notaris.pembayaran-tambahan', $notaris->id) }}"
+                                                                <button id="pay-button"
                                                                     class="btn btn-icon btn-outline-success"><i
-                                                                        class="feather icon-check"></i></a>
+                                                                        class="feather icon-check"></i></button>
+                                                                {{-- <a href="{{ route('notaris.pembayaran-tambahan', $notaris->id) }}"
+                                                                    class="btn btn-icon btn-outline-success"><i
+                                                                        class="feather icon-check"></i></a> --}}
                                                             </td>
                                                         </tr>
                                                     @endif
