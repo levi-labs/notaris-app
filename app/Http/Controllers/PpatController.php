@@ -386,13 +386,15 @@ class PpatController extends Controller
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
         $ppat_status = Ppat::where('id', $ppat_id)->first();
         $user = User::where('id', $id)->first();
-        $type = $nominal !== null ? 'PPAT' : 'PPAT TAMBAHAN';
+        $type = null;
         $amount = 0;
 
         if ($nominal !== null && $ppat_status->status_layanan == 2) {
             $amount = $nominal;
+            $type = 'PPAT';
         } elseif ($nominal_tambahan !== null && $ppat_status->status_layanan == 3) {
             $amount = $nominal_tambahan;
+            $type = 'PPAT TAMBAHAN';
         }
 
         $params = array(
