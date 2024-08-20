@@ -389,7 +389,7 @@ class PpatController extends Controller
         $type = null;
         $amount = 0;
 
-        if ($nominal !== null && $ppat_status->status_layanan == 2) {
+        if ($nominal !== null && $ppat_status->status_layanan == 1 || $ppat_status->status_layanan == 2) {
             $amount = $nominal;
             $type = 'PPAT';
         } elseif ($nominal_tambahan !== null && $ppat_status->status_layanan == 3) {
