@@ -232,7 +232,7 @@ class PpatController extends Controller
         $nominal = $biayalayanan->sum('harga');
 
         if ($biayalayanan->count() > 0) {
-            $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal);
+            $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal, $ppat->id);
         } else {
             $snapToken = 10000;
         }
@@ -364,7 +364,7 @@ class PpatController extends Controller
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    public function checkoutPembayaranLayanan($id, $nominal)
+    public function checkoutPembayaranLayanan($id, $nominal, $ppat_id)
     {
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('midtrans.isProduction');
@@ -374,7 +374,7 @@ class PpatController extends Controller
         $user = User::where('id', $id)->first();
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand(),
+                'order_id' => rand() . '-' . $ppat_id,
                 'gross_amount' => $nominal,
             ),
             'customer_details' => array(
@@ -395,7 +395,14 @@ class PpatController extends Controller
 
         if ($request->signature_key == $hashed) {
             if ($request->transaction_status == 'settlement') {
-                dd($request->all);
+                $ppat_id = explode('-', $request->order_id)[1];
+                $transaksi = TransaksiBiayaPermohonan::where('ppat_id', $ppat_id)->first();
+                $transaksi->update([
+                    'status' => 'lunas'
+                ]);
+            } else {
+
+                return redirect()->back()->with('error', 'Pembayaran Gagal');
             }
         }
     }
