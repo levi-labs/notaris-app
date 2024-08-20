@@ -224,10 +224,10 @@ class PpatController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
-        if ($biayalayanan->status->first() == 'belum lunas') {
+        if ($biayalayanan->status == 'belum lunas') {
             $nominal = $biayalayanan->sum('harga');
         }
-        if ($biayaTambahan->status->first() == 'belum lunas') {
+        if ($biayaTambahan->status == 'belum lunas') {
             $nominal_tambahan = $biayaTambahan->sum('nominal');
         }
 
