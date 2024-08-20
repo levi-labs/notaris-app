@@ -171,7 +171,7 @@ class NotarisController extends Controller
         if ($notaris->status_layanan == '3') {
             if ($checkBiayaTambahan_notaris->count() > 0) {
                 $notaris_tambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->first();
-                if ($checkBiayaTambahan_notaris->status == 'belum lunas') {
+                if ($notaris_tambahan->status == 'belum lunas') {
                     $nominal_tambahan = $biayaTambahan->sum('nominal');
                 }
             }
