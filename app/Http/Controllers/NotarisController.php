@@ -162,10 +162,20 @@ class NotarisController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $notaris->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanNotaris::where('notaris_id', $notaris->id)->get();
 
-        $nominal = $biayalayanan->sum('harga');
+        if ($biayalayanan->status->first() == 'belum lunas') {
+            $nominal = $biayalayanan->sum('harga');
+        }
+        if ($biayaTambahan->status->first() == 'belum lunas') {
+            $nominal_tambahan = $biayaTambahan->sum('nominal');
+        }
 
 
-        $snapToken = $this->checkoutPembayaranLayanan($notaris->user_id, $nominal, $notaris->id);
+        $snapToken = $this->checkoutPembayaranLayanan(
+            $notaris->user_id,
+            $nominal,
+            $notaris->id,
+            $nominal_tambahan
+        );
 
         return view('pages.notaris.detail', compact(
             'title',
@@ -175,19 +185,19 @@ class NotarisController extends Controller
             'snapToken',
         ));
     }
-    public function checkoutPembayaranLayanan($id, $nominal, $notaris_id)
+    public function checkoutPembayaranLayanan($id, $nominal = null, $notaris_id, $biayaTambahan = null)
     {
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('midtrans.isProduction');
         \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
 
+        $type = $nominal !== null ? 'NOTARIS' : 'NOTARIS TAMBAHAN';
         $user = User::where('id', $id)->first();
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand() . '-' . $notaris_id . '-' . 'NOTARIS',
-                'gross_amount' => $nominal,
-                ''
+                'order_id' => rand() . '-' . $notaris_id . '-' . $type,
+                'gross_amount' => $nominal !== null ? $nominal : $biayaTambahan,
             ),
             'customer_details' => array(
                 'first_name' => $user->nama,

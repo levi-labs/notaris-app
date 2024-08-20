@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BerkasLayanan;
 use App\Models\BiayaPermohonan;
 use App\Models\BiayaTambahan;
+use App\Models\BiayaTambahanNotaris;
 use App\Models\BiayaTambahanPpat;
 use App\Models\LayananPermohonan;
 use App\Models\Ppat;
@@ -223,10 +224,21 @@ class PpatController extends Controller
         $biayalayanan = BiayaPermohonan::where('layanan_permohonan_id', $ppat->layanan_permohonan_id)->get();
         $biayaTambahan = BiayaTambahanPpat::where('ppat_id', $ppat->id)->get();
 
-        $nominal = $biayalayanan->sum('harga');
+        if ($biayalayanan->status->first() == 'belum lunas') {
+            $nominal = $biayalayanan->sum('harga');
+        }
+        if ($biayaTambahan->status->first() == 'belum lunas') {
+            $nominal_tambahan = $biayaTambahan->sum('nominal');
+        }
 
 
-        $snapToken = $this->checkoutPembayaranLayanan($ppat->user_id, $nominal, $ppat->id);
+        $snapToken = $this->checkoutPembayaranLayanan(
+            $ppat->user_id,
+            $nominal,
+            $ppat->id,
+            $nominal_tambahan
+
+        );
 
 
         return view('pages.ppat.detail', compact(
@@ -356,18 +368,23 @@ class PpatController extends Controller
             return redirect()->back()->with('error', $th->getMessage());
         }
     }
-    public function checkoutPembayaranLayanan($id, $nominal, $ppat_id)
-    {
+    public function checkoutPembayaranLayanan(
+        $id,
+        $nominal = null,
+        $ppat_id,
+        $nominal_tambahan = null
+    ) {
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         \Midtrans\Config::$isProduction = config('midtrans.isProduction');
         \Midtrans\Config::$isSanitized = config('midtrans.isSanitized');
         \Midtrans\Config::$is3ds = config('midtrans.is3ds');
 
         $user = User::where('id', $id)->first();
+        $type = $nominal !== null ? 'PPAT' : 'PPAT TAMBAHAN';
         $params = array(
             'transaction_details' => array(
-                'order_id' => rand() . '-' . $ppat_id . '-' . 'PPAT',
-                'gross_amount' => $nominal,
+                'order_id' => rand() . '-' . $ppat_id . '-' . $type,
+                'gross_amount' => $nominal !== null ? $nominal : $nominal_tambahan,
             ),
             'customer_details' => array(
                 'first_name' => $user->nama,
@@ -404,6 +421,24 @@ class PpatController extends Controller
                         ]);
 
                         return redirect()->back()->with('success', 'Pembayaran Berhasil');
+                    } elseif ($is_type == 'PPAT TAMBAHAN') {
+                        $transaksi = BiayaTambahanPpat::where('ppat_id', $id)->get();
+                        foreach ($transaksi as $value) {
+                            BiayaTambahanPpat::where('id', $value->id)->update([
+                                'status' => 'lunas'
+                            ]);
+                        }
+
+                        return redirect()->back()->with('success', 'Pembayaran Berhasil');
+                    } elseif ($is_type == 'NOTARIS TAMBAHAN') {
+                        $transaksi = BiayaTambahanNotaris::where('notaris_id', $id)->get();
+                        foreach ($transaksi as $value) {
+                            BiayaTambahanNotaris::where('id', $value->id)->update([
+                                'status' => 'lunas'
+                            ]);
+
+                            return redirect()->back()->with('success', 'Pembayaran Berhasil');
+                        }
                     }
                 } else {
                     return redirect()->back()->with('error', 'Pembayaran Gagal');
