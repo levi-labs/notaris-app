@@ -13,12 +13,33 @@ class ArsipNotarisController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $title = 'Arsip Notaris';
-        $data = ArsipNotaris::all();
 
-        return view('pages.arsip-notaris.index', compact('title', 'data'));
+        try {
+            if (isset($request->search) && $request->search !== null) {
+                $data = DB::table('arsip_notaris')
+                    ->join('notaris', 'arsip_notaris.notaris_id', '=', 'notaris.id')
+                    ->join('layanan_permohonan', 'notaris.layanan_permohonan_id', '=', 'layanan_permohonan.id')
+                    ->join('jenis_permohonan', 'layanan_permohonan.jenis_permohonan_id', '=', 'jenis_permohonan.id')
+                    ->select('arsip_notaris.*', 'layanan_permohonan.nama as nama_layanan', 'jenis_permohonan.nama as nama_jenis')
+                    ->where('arsip_notaris.no_arsip', 'like', '%' . $request->search . '%')
+                    ->orWhere('arsip_notaris.no_akta', 'like', '%' . $request->search . '%')
+                    ->get();
+                return view('pages.arsip-notaris.index', compact('title', 'data'));
+            } else {
+                $data = DB::table('arsip_notaris')
+                    ->join('notaris', 'arsip_notaris.notaris_id', '=', 'notaris.id')
+                    ->join('layanan_permohonan', 'notaris.layanan_permohonan_id', '=', 'layanan_permohonan.id')
+                    ->join('jenis_permohonan', 'layanan_permohonan.jenis_permohonan_id', '=', 'jenis_permohonan.id')
+                    ->select('arsip_notaris.*', 'layanan_permohonan.nama as nama_layanan', 'jenis_permohonan.nama as nama_jenis')
+                    ->get();
+                return view('pages.arsip-notaris.index', compact('title', 'data'));
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     /**
