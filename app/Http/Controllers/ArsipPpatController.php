@@ -15,12 +15,32 @@ class ArsipPpatController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        $title = 'Arsip Ppat';
-        $data = ArsipPpat::all();
-        return view('pages.arsip-ppat.index', compact('title', 'data'));
+        try {
+            $title = 'Arsip Ppat';
+            if (isset($request->search) && $request->search !== null) {
+                $data = DB::table('arsip_ppat')
+                    ->join('ppat', 'arsip_ppat.ppat_id', '=', 'ppat.id')
+                    ->join('layanan_permohonan', 'ppat.layanan_permohonan_id', '=', 'layanan_permohonan.id')
+                    ->join('jenis_permohonan', 'layanan_permohonan.jenis_permohonan_id', '=', 'jenis_permohonan.id')
+                    ->select('arsip_ppat.*', 'layanan_permohonan.nama as nama_layanan', 'jenis_permohonan.nama as nama_jenis')
+                    ->where('arsip_ppat.no_arsip', 'like', '%' . $request->search . '%')
+                    ->orWhere('arsip_ppat.no_akta', 'like', '%' . $request->search . '%')
+                    ->get();
+                return view('pages.arsip-ppat.index', compact('title', 'data'));
+            } else {
+                $data = DB::table('arsip_ppat')
+                    ->join('ppat', 'arsip_ppat.ppat_id', '=', 'ppat.id')
+                    ->join('layanan_permohonan', 'ppat.layanan_permohonan_id', '=', 'layanan_permohonan.id')
+                    ->join('jenis_permohonan', 'layanan_permohonan.jenis_permohonan_id', '=', 'jenis_permohonan.id')
+                    ->select('arsip_ppat.*', 'layanan_permohonan.nama as nama_layanan', 'jenis_permohonan.nama as nama_jenis')
+                    ->get();
+                return view('pages.arsip-ppat.index', compact('title', 'data'));
+            }
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     /**

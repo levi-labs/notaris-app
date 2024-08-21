@@ -30,7 +30,21 @@
                                 {{ session()->get('error') }}
                             </div>
                         @endif
-                        <a href="{{ route('arsip-ppat.create') }}" class="btn btn-primary mt-4">Tambah Arsip</a>
+                        <div class="row justify-content-between">
+                            <div class="col-md-8">
+                                <a href="{{ route('arsip-ppat.create') }}" class="btn btn-primary mt-4">Tambah Arsip</a>
+                            </div>
+                            <div class="col-md-4">
+                                <form action="" class="mt-4">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Nomor Arsip / Nomor Akta"
+                                            name="search" value="{{ request('search') }}">
+                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
                         {{-- <div class="alert alert-info my-2">
                             <i class="feather icon-info"></i> <b>INFO</b> : &nbsp;Pengajuan dapat dibatalkan jika belom
                             dikonfirmasi, jika sudah dikonfirmasi, pengajuan dapat dibatalkan dengan menghubungi
@@ -52,39 +66,15 @@
                                 </thead>
                                 <tbody class="text-center">
                                     @foreach ($data as $item)
-                                        @php
-                                            $status = null;
-
-                                            switch ($item->status_layanan) {
-                                                case '0':
-                                                    $status = 'Dibatalkan';
-                                                    break;
-                                                case '1':
-                                                    $status = 'Menunggu Konfirmasi';
-                                                    break;
-                                                case '2':
-                                                    $status = 'Dikonfirmasi';
-                                                    break;
-                                                case '3':
-                                                    $status = 'Terverifikasi';
-                                                    break;
-                                                case '4':
-                                                    $status = 'Selesai';
-                                                    break;
-                                                default:
-                                                    # code...
-                                                    break;
-                                            }
-                                        @endphp
                                         <tr>
                                             <td> {{ $loop->iteration }}</td>
                                             <td>{{ $item->no_arsip }}</td>
                                             <td>{{ $item->no_akta }}</td>
                                             <td>
 
-                                                {{ $item->layanan->nama }} |
+                                                {{ $item->nama_layanan }} |
                                                 <div class="badge badge-info">
-                                                    {{ $item->layanan->jenisPermohonan->nama }}
+                                                    {{ $item->nama_jenis }}
                                                 </div>
                                             </td>
                                             <td>
