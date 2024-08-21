@@ -226,8 +226,11 @@ class NotarisController extends Controller
             );
             $snapToken = \Midtrans\Snap::getSnapToken($params);
             return $snapToken;
-        } catch (\Exception $th) {
-            return back()->with('error', $th->getMessage());
+        } catch (\Throwable $th) {
+            if (response()->status() == 400 && in_array($th->getMessage(), ['transaction_details.gross_amount harus sama atau lebih besar dari 0.01'])) {
+                return redirect()->back()->with('error', 'Total Biaya Tambahan Masih 0 (Rp.0). Silahkan Tambahkan Terlebih Dahulu');
+            }
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
