@@ -18,7 +18,7 @@
 
             @page {
                 size: F4 landscape;
-                margin: 10%;
+                margin: 5%;
             }
         }
 
@@ -66,7 +66,7 @@
 
         .table-print {
             margin: auto;
-            width: 60%;
+            width: 65%;
 
             padding: 1px;
         }

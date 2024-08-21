@@ -11,6 +11,8 @@ use App\Http\Controllers\JenisPermohonanController;
 use App\Http\Controllers\LayananPermohonanController;
 use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\PpatController;
+use App\Http\Controllers\ReportNotarisController;
+use App\Http\Controllers\ReportPpatController;
 use App\Http\Controllers\UserController;
 use App\Models\BiayaTambahanNotaris;
 use Illuminate\Support\Facades\Route;
@@ -188,5 +190,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/reset-password/{user}', 'resetPassword')->name('user.reset-password');
         Route::get('/ubah-password', 'ubahPassword')->name('user.ubah-password');
         Route::patch('/update-password/{user}', 'updatePassword')->name('user.update-password');
+    });
+
+    Route::controller(ReportPpatController::class)->prefix('report-ppat')->group(function () {
+        Route::get('/', 'index')->name('report-ppat.index');
+        Route::post('/cetak', 'print')->name('report-ppat.cetak');
+    });
+
+    Route::controller(ReportNotarisController::class)->prefix('report-notaris')->group(function () {
+        Route::get('/', 'index')->name('report-notaris.index');
+        Route::post('/cetak', 'print')->name('report-notaris.cetak');
     });
 });

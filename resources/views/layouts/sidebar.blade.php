@@ -60,6 +60,16 @@
 
             </ul>
         </li>
+        <li class="nav-item pcoded-hasmenu">
+            <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-flag"></i></span><span
+                    class="pcoded-mtext">Report
+                </span></a>
+            <ul class="pcoded-submenu">
+                <li><a href="{{ route('report-ppat.index') }}">Report PPAT</a></li>
+                <li><a href="{{ route('report-notaris.index') }}">Report Notaris</a></li>
+
+            </ul>
+        </li>
     @endif
 
     @if (auth()->user()->type_user == 'admin' || auth()->user()->type_user == 'master')
