@@ -204,27 +204,31 @@ class NotarisController extends Controller
         $user = User::where('id', $id)->first();
         $amount = 0;
 
-        if ($nominal !== null && $notaris_status->status_layanan == 1 || $notaris_status->status_layanan == 2) {
-            $amount = $nominal;
-            $type = 'NOTARIS';
-        } elseif ($biayaTambahan !== null && $notaris_status->status_layanan == 3) {
-            $amount = $biayaTambahan;
-            $type = 'TAMBAHAN NOTARIS';
-        }
-        $params = array(
-            'transaction_details' => array(
-                'order_id' => rand() . '-' . $notaris_id . '-' . $type,
-                'gross_amount' => $amount,
-            ),
-            'customer_details' => array(
-                'first_name' => $user->nama,
-                'email' => $user->email,
-            ),
+        try {
+            if ($nominal !== null && $notaris_status->status_layanan == 1 || $notaris_status->status_layanan == 2) {
+                $amount = $nominal;
+                $type = 'NOTARIS';
+            } elseif ($biayaTambahan !== null && $notaris_status->status_layanan == 3) {
+                $amount = $biayaTambahan;
+                $type = 'TAMBAHAN NOTARIS';
+            }
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => rand() . '-' . $notaris_id . '-' . $type,
+                    'gross_amount' => $amount,
+                ),
+                'customer_details' => array(
+                    'first_name' => $user->nama,
+                    'email' => $user->email,
+                ),
 
-            'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
-        );
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-        return $snapToken;
+                'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
+            );
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            return $snapToken;
+        } catch (\Exception $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
 
 

@@ -388,29 +388,33 @@ class PpatController extends Controller
         $user = User::where('id', $id)->first();
         $type = null;
         $amount = 0;
+        try {
+            if ($nominal !== null && $ppat_status->status_layanan == 1 || $ppat_status->status_layanan == 2) {
+                $amount = $nominal;
+                $type = 'PPAT';
+            } elseif ($nominal_tambahan !== null && $ppat_status->status_layanan == 3) {
+                $amount = $nominal_tambahan;
+                $type = 'PPAT TAMBAHAN';
+            }
 
-        if ($nominal !== null && $ppat_status->status_layanan == 1 || $ppat_status->status_layanan == 2) {
-            $amount = $nominal;
-            $type = 'PPAT';
-        } elseif ($nominal_tambahan !== null && $ppat_status->status_layanan == 3) {
-            $amount = $nominal_tambahan;
-            $type = 'PPAT TAMBAHAN';
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => rand() . '-' . $ppat_id . '-' . $type,
+                    'gross_amount' => $amount,
+                ),
+                'customer_details' => array(
+                    'first_name' => $user->nama,
+                    'email' => $user->email,
+                ),
+
+                'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
+            );
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            return $snapToken;
+        } catch (\Exception $th) {
+
+            return redirect()->back()->with('error', $th->getMessage());
         }
-
-        $params = array(
-            'transaction_details' => array(
-                'order_id' => rand() . '-' . $ppat_id . '-' . $type,
-                'gross_amount' => $amount,
-            ),
-            'customer_details' => array(
-                'first_name' => $user->nama,
-                'email' => $user->email,
-            ),
-
-            'enabled_payments' => array('bca_va', 'permata_va', 'bri_va', 'bni_va', 'gopay'),
-        );
-        $snapToken = \Midtrans\Snap::getSnapToken($params);
-        return $snapToken;
     }
 
     public function callbackCheckOut(Request $request)
